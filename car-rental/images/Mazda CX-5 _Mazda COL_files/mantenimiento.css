@@ -1,0 +1,29 @@
+body{
+    background: #ffffff;
+}
+
+.mantenimiento{
+    display: flex;
+    flex: 100%;
+    padding: 20px;
+}
+.mantenimiento-2{
+    flex: 40%;
+}
+.mantenimiento-1{
+    flex: 60%;
+}
+.legalman{
+    font-size: 10px;    
+}
+@media (max-width: 768px){
+    .mantenimiento{
+        flex-direction: column;
+        padding: 15px;
+    }
+    .mantenimiento-2{
+        padding: 15px 0px;
+    }
+    
+
+}

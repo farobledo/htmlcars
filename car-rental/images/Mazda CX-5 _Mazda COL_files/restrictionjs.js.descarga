@@ -1,0 +1,74 @@
+! function() {
+    var e = 0,
+        t = setInterval(function() { e += 1, 0 != $("#vinform").length && ($parent = $("#vinform").closest(".row.row--gutters").parent(), $parent.prepend($("#vinform")), clearInterval(t)), 1 <= e && (void 0 !== window.mxp.data[1].props.grades && ("PRIMEPRIME MT 2,0L" == window.mxp.data[1].props.grades[0].grade && (window.mxp.data[1].props.grades[0].grade = "PRIME MT 2,0L"), "PRIMEPRIME MT 2,0L" == $(".mxp-main-dropdown-header-text-2Nizs span")[0].innerText && ($(".mxp-main-dropdown-header-text-2Nizs span")[0].innerText = "PRIME MT 2,0L"), "PRIMEPRIME MT 2,0L" == $(".mxp-main-dropdown-item-28ee2 span")[0].innerText && ($(".mxp-main-dropdown-item-28ee2 span")[0].innerText = "PRIME MT 2,0L")), clearInterval(t)), 20 < e && clearInterval(t) }, 1e3)
+}(),
+function() {
+    var e = 0,
+        t = setInterval(function() { e += 1, document.querySelector(".mxp-main-tabs-3JV1W") && (document.querySelector(".mxp-main-tabs-3JV1W").classList.add("mxp-main-dropdown-ku_Ca"), clearInterval(t)), 20 < e && clearInterval(t) }, 1e3)
+}(),
+function() {
+    var t = 0,
+        a = setInterval(function() {
+            var e;
+            t += 1, "/vehiculos-mazda" == window.location.pathname && (document.querySelector(".mxp-main-site-navigation-1u2k8 .mxp-main-navigation-link--text-3k7gp") && ($(".mxp-main-site-navigation-1u2k8 .mxp-main-navigation-link--text-3k7gp").eq(0).trigger("click"), e = document.createElement("style"), document.body.append(e), e.innerText = ".mxp-main-navigation-panels--item-container-15qTZ{position: relative !important;}", clearInterval(a)), document.body.offsetWidth <= 1200 && ($(".mxp-main-hamburger-menu-2Y5Db").trigger("click"), setTimeout(function() { $(".mxp-main-list-links-item-2xVBU .list").eq(0).trigger("click") }, 100), e = document.createElement("style"), document.body.append(e), e.innerText = ".mxp-main-utilities-1gNHl{visibility: hidden;}", clearInterval(a)), 20 < t && clearInterval(a))
+        }, 1e3)
+}(),
+function() { var e = 1e13 * (Math.random() + ""); "/vehiculos/mazda-2-sedan/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu0;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-2-sport/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu00;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-3-hatchback/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu001;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-3-sedan/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu000;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-6/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu002;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-cx-3/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu003;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-cx-5/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu004;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-cx-9/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu005;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>'), "/vehiculos/mazda-mx-5/gracias-por-tu-registro/" == window.location.pathname && document.write('<iframe src="https://4476446.fls.doubleclick.net/activityi;src=4476446;type=TagCo0;cat=formu006;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;ord=' + e + '?" width="1" height="1" frameborder="0" style="display:none"></iframe>') }(),
+function() {
+    var e = 0,
+        t = setInterval(function() { e += 1, 0 != $("#conn").length && ($parent = $("#conn").closest(".row.row--gutters").parent(), $parent.prepend($("#conn")), $("#conn").next().empty(), clearInterval(t)), 20 < e && clearInterval(t) }, 1e3)
+}(),
+function() {
+    var t = 0,
+        a = setInterval(function() {
+            t += 1;
+            var e = $('a[href="https://www.mazda-signature.com.co/"]');
+            0 != e.length && (e.attr("target", "_blank"), e.on("click", function(e) { e.preventDefault(), e.stopPropagation(), window.open(this.href) }), clearInterval(a)), 20 < t && clearInterval(a)
+        }, 1e3)
+}(), window.location.hash = window.location.hash.split("?")[0],
+    function() {
+        var n = 0;
+
+        function o(e) { return e = (e = (e = (e = (e = (e = decodeURIComponent(e)).toLowerCase()).replace(/ /g, "")).replace(/-/g, "_")).replace(/,/g, "")).replace(/\./g, "") }
+        var c = setInterval(function() {
+            20 <= n && clearInterval(c),
+                function() {
+                    if (-1 != (r = window.location.pathname).indexOf("versiones")) {
+                        if (!document.querySelector(".mxp-main-dropdown-items-kngVF")) return n += 1, console.log(n);
+                        clearInterval(c);
+                        var e = document.querySelector(".mxp-main-dropdown-items-kngVF").children,
+                            t = r.split("/").filter(e => e.length).map(e => o(e)),
+                            a = t.indexOf("vehiculos"),
+                            r = t.indexOf("versiones"),
+                            i = t.slice(a + 1, r - a);
+                        Array.from(e).map((e, t) => {
+                            var a = e.querySelector("span"),
+                                r = o(a.innerHTML);
+                            e.id = i + "_" + r, a.id = i + "_" + r + "_span"
+                        })
+                    }
+                }()
+        }, 200)
+    }(),
+    function() {
+        var a = 0;
+
+        function i(e) { return e = (e = (e = (e = (e = (e = decodeURIComponent(e)).toLowerCase()).replace(/ /g, "")).replace(/-/g, "_")).replace(/,/g, "")).replace(/\./g, "") }
+        var n = setInterval(function() {
+            20 <= a && clearInterval(n),
+                function() {
+                    var e = window.location.pathname;
+                    if (-1 != e.indexOf("vehiculos")) {
+                        if (!document.querySelector(".slipe-colors")) return a += 1;
+                        clearInterval(n);
+                        var t = document.querySelector(".slipe-colors").children,
+                            r = (e = e.split("/").filter(e => e.length).map(e => i(e)))[e.length - 1];
+                        Array.from(t).map((e, t) => {
+                            var a = e.querySelector("span"),
+                                t = i(Array.from(document.querySelectorAll(".slipe-name"))[t].innerHTML);
+                            e.id = r + "_" + t, a.classList.add(a.id), a.id = r + "_" + t + "_span"
+                        })
+                    }
+                }()
+        }, 200)
+    }();

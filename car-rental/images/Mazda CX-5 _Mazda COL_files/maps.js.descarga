@@ -1,0 +1,241 @@
+angular
+    .module("appMaps", ['ngMap'])
+    .controller('MapsController', MapsController)
+
+MapsController.$inject = ['$scope', '$http', 'NgMap', '$timeout', '$compile'];
+
+function MapsController($scope, $http, NgMap, $timeout, $compile) {
+
+    $scope.addUserPosition = addUserPosition;
+
+    $scope.getCenter = getCenter;
+
+    $scope.showSites = showSites;
+    $scope.customShowSites = customShowSites;
+
+    $scope.checkAll = checkAll;
+    $scope.checkOne = checkOne;
+
+    $scope.connFiltered = connFiltered;
+    $scope.filters = {
+        'serv_venta': false,
+        'serv_taller': false,
+        'serv_repuestos': false,
+    };
+
+    $scope.citys_array = [
+        { id: 16, name: 'Armenia', lat: 4.531812, long: -75.661618 },
+        { id: 22, name: 'Barrancabermeja', lat: 7.061981, long: -73.853169 },
+        { id: 2, name: 'Barranquilla', lat: 10.987598, long: -74.816090, },
+        { id: 3, name: 'Bogotá', lat: 4.694807, long: -74.075512 },
+        { id: 18, name: 'Bucaramanga', lat: 7.115332, long: -73.138657 },
+        { id: 21, name: 'Cali', lat: 3.407056, long: -76.535620 },
+        { id: 4, name: 'Cartagena', lat: 10.389013, long: -75.476145 },
+        { id: 10, name: 'Chía', lat: 4.865442, long: -74.050746 },
+        { id: 15, name: 'Cúcuta', lat: 7.896231, long: -72.496463 },
+        { id: 20, name: 'Ibagué', lat: 4.443425, long: -75.241532 },
+        { id: 6, name: 'Manizales', lat: 5.062515, long: -75.540603 },
+        { id: 1, name: 'Medellín', lat: 6.191167, long: -75.570136 },
+        { id: 9, name: 'Montería', lat: 8.760618, long: -75.899163 },
+        { id: 11, name: 'Neiva', lat: 2.956701, long: -75.302431 },
+        { id: 14, name: 'Pasto', lat: 1.206503, long: -77.277394 },
+        { id: 23, name: 'Pereira', lat: 4.808605, long: -75.690662 },
+        { id: 25, name: 'Popayán', lat: 2.445980, long: -76.625133 },
+        { id: 12, name: 'Santa Marta', lat: 11.233026, long: -74.196095 },
+        { id: 19, name: 'Sincelejo', lat: 9.317452, long: -75.402784 },
+        { id: 5, name: 'Tunja', lat: 5.574595, long: -73.361096 },
+        { id: 8, name: 'Valledupar', lat: 10.483999, long: -73.253697 },
+        { id: 13, name: 'Villavicencio', lat: 4.160876, long: -73.643489 },
+        { id: 7, name: 'Yopal', lat: 5.357599, long: -72.401148 },
+
+    ];
+
+    $scope.city_selected = 3;
+
+
+    $scope.concecionarios = [
+        //Armenia
+        { id: 29, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 12:00pm - 2:00pm - 6:00pm Sábados 9:00am - 1:00pm", schedule_workshop: "Lunes a Viernes: 7:00am - 12:00p.m, 2:00pm - 6:00pm. Sábado 8:00am - 1:00pm.", name: "Colautos", id_city: 16, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 6 No. 3-180  Centro Comercial Calima L1-20", tel_ventas: "310 664 9904 / 01 8000 423 317 ", Cita_Previa: false, email_ventas: "servicioalcliente@colautos.co", dir_taller: "Carrera 6 No. 3-180 Centro Comercial Calima Sótano 2", tel_taller: "310 664 9904 / 01 8000 423 317 ", sitio_web: "https://colautosdelcafe.com/", lat: 4.540380, long: -75.660887, cod_conce: 420, cod_suc: 2 },
+        //barrancabermrja
+
+        { id: 34, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am-12:00pm - 2:00pm-6:00pm Sábado 8:00am - 1:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 12:00pm  - 2:00pm - 5:30pm Sábado 7:00am - 12:00pm", name: "Mayorautos (km 1 vía Bucaramanga)", id_city: 22, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Km 1 Vía Bucaramanga – El Retén", Cita_Previa: false, tel_ventas: "(607) 602-1290", email_ventas: false, dir_taller: "Km 1 Vía Bucaramanga – El Retén", tel_taller: "(607) 602-1290", sitio_web: "http://www.mayorautos.com/ ", lat: 7.0432510, long: -73.824342, cod_conce: 270, cod_suc: 4 },
+
+
+        //Barranquilla
+        { id: 2, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 7:30am - 7:00pm Sábado 8:00am - 5:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 12:00pm - 2:00pm - 6:00pm Sábado 8:00am - 1:30pm", name: "Janna Motors (Calle 76 No. 54)", id_city: 2, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Calle 76 No. 54-Esquina", Cita_Previa: false, tel_ventas: "(605) 385-4291", email_ventas: false, dir_taller: false, tel_taller: "(605) 385-4291", sitio_web: "https://www.jannamotorsmazda.com/", lat: 11.003182, long: -74.804691, cod_conce: 540, cod_suc: 1 },
+        { id: 48, check_osv: false, check_owv: true, osv: false, owv: true, open_showcase: "Cerrado", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am-12:00pm - 1:00pm - 5:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 12:00pm - 2:00pm - 6:00pm Sábado 8:00am - 1:30pm", name: "Janna Motors (Vía 40 No. 69)", id_city: 2, serv_venta: false, serv_taller: true, serv_repuestos: true, dir_vent: false, tel_ventas: false, email_ventas: false, dir_taller: "Vía 40 No. 69-40", Cita_Previa: false, tel_taller: "(605) 385-4936", sitio_web: "https://www.jannamotorsmazda.com/", lat: 11.005573, long: -74.788963, cod_conce: 540, cod_suc: 2 },
+
+        //Bogotá
+        { id: 20, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Sábado 9:30am - 06:30pm Domingos y festivos 11:00am - 05:00pm", schedule_workshop: "Lunes a Sábado 08:00am - 06:00pm", name: "JORGE CORTES Y CIA", id_city: 3, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Av. Suba No. 97A-60", Cita_Previa: false, tel_ventas: "(601) 650-0600", cel_ventas: false, email_ventas: "servicioalcliente@jorgecortes.com.co", dir_taller: "Av.Suba No. 97A 60", tel_taller: "(601) 650-0600 Opción 2", cel_taller: false, sitio_web: "https://jorgecortes.com.co/web2018/mazda/", lat: 4.686815, long: -74.063637, cod_conce: 370, cod_suc: 1 },
+        { id: 21, check_osv: true, check_owv: false, osv: true, owv: false, open_showcase: "Abierto", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "Lunes a Sábado 09:30am - 06:30pm", schedule_workshop: "", name: "JORGE CORTES Y CIA", id_city: 3, serv_venta: true, serv_taller: true, serv_repuestos: false, dir_vent: "Av. Carrera 7 No. 75-21", Cita_Previa: false, tel_ventas: "(601) 650-0600 Ext: 650", cel_ventas: false, email_ventas: false, dir_taller: "Av.Suba No. 97A 60", tel_taller: "(601) 650-0600 Opción 2", cel_taller: false, email_taller: false, sitio_web: "https://jorgecortes.com.co/web2018/mazda/", lat: 4.657931, long: -74.053786, cod_conce: 370, cod_suc: 3 },
+        { id: 22, check_osv: true, check_owv: false, osv: true, owv: false, open_showcase: "Abierto", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "Lunes a Viernes 10:00am - 5:00pm   Sábado 10:00am - 5:00pm,  Domingo y Festivo 10:00am - 5:00pm", schedule_workshop: "", name: "Motovalle (Av. 19 con 127)", id_city: 3, serv_venta: true, serv_taller: false, serv_repuestos: false, dir_vent: "Av. 19 No. 127-05 La Calleja", Cita_Previa: false, tel_ventas: "(601) 743-1046 ", email_ventas: "servicioalcliente@motovalle.com", dir_taller: false, tel_taller: false, sitio_web: "http://www.motovalle.com/mazda/home/", lat: 4.705736, long: -74.048971, cod_conce: 360, cod_suc: 1 },
+        { id: 37, check_osv: true, check_owv: true, osv: false, owv: true, open_showcase: "Cerrado", open_workshop: "Abierto", schedule_showcase: "Lunes a  Viernes 8:00am -7:00pm Sábados 9:00am - 6:00pm Domingo 10:00am-4:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 5:00pm Sábado 8:30am - 12:00pm", name: "Alciautos (Calle 13 con 68)", id_city: 3, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Calle 13 No. 68A-35", Cita_Previa: false, tel_ventas: "(601) 307-2020 ", cel_ventas: false, email_ventas: false, dir_taller: "Calle 13 No. 68A-35", tel_taller: "(601) 307-2020 ", sitio_web: "https://alciautosmazda.com/", lat: 4.637986, long: -74.119959, cod_conce: 330, cod_suc: 4 },
+        //{ id: 38, check_osv: true, check_owv: false, osv: false, owv: false, open_showcase: "Cerrado", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "Lunes a Sábado 10:00am - 7:00pm Domingos 10:00am - 5:00pm", schedule_workshop: "", name: "Alciautos (Calle 96 con 11)", id_city: 3, serv_venta: true, serv_taller: false, serv_repuestos: false, dir_vent: "Calle 96 No. 10-38", Cita_Previa: false, tel_ventas: "(601) 307-2021 ", cel_ventas: false, email_ventas: false, dir_taller: false, tel_taller: false, cel_taller: false, email_taller: false, sitio_web: "https://alciautosmazda.com/", lat: 4.679117, long: -74.045023, cod_conce: 330, cod_suc: 5 },
+        { id: 39, check_osv: true, check_owv: false, osv: true, owv: false, open_showcase: "Abierto", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "Lunes a Viernes 10:00 am - 7:00 pm", schedule_workshop: "", name: "Alciautos (C.C. Centro Mayor)", id_city: 3, serv_venta: true, serv_taller: false, serv_repuestos: false, dir_vent: "Calle 38A Sur No. 34D-51", Cita_Previa: false, tel_ventas: "(601) 307-2020 ", email_ventas: false, dir_taller: false, tel_taller: false, cel_taller: false, email_taller: false, sitio_web: "https://alciautosmazda.com/", lat: 4.592419, long: -74.124634, cod_conce: 330, cod_suc: 2 },
+        { id: 41, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 10:00 am - 7:00 pm", schedule_workshop: "Lunes a Viernes 10:00 am - 6:00 pm", name: "Alciautos (Autopista Norte Calle 134)", id_city: 3, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Calle 134A No. 45-95", Cita_Previa: false, tel_ventas: "(601) 307-2020 ", cel_ventas: false, email_ventas: false, dir_taller: "Calle 134A No. 45-95", tel_taller: "(601) 307-2020 ", sitio_web: "https://alciautosmazda.com/", lat: 4.719549, long: -74.052471, cod_conce: 330, cod_suc: 1 },
+        { id: 51, check_osv: false, check_owv: true, osv: false, owv: true, open_showcase: "Cerrado", open_workshop: "Abierto", schedule_showcase: "", schedule_workshop: "Lunes a Viernes 7:00am - 5:00pm   Sábados 8:00am - 4:00pm", name: "Motovalle ( AUTOPISTA NORTE CALLE 170)", id_city: 3, serv_venta: false, serv_taller: true, serv_repuestos: true, dir_vent: false, Cita_Previa: false, tel_ventas: false, email_ventas: false, dir_taller: "Calle 171 No. 22A-30/50 (Oreja Nororiental de la Autopista Norte con Calle 170)", tel_taller: "(601) 743-1046 Opción 3", sitio_web: "http://www.motovalle.com/mazda/home/", lat: 4.752110, long: -74.045186, cod_conce: 360, cod_suc: 3 },
+        //{ id: 52, check_osv: false, check_owv: true, osv: false, owv: true, open_showcase: "Cerrado", open_workshop: "Abierto", schedule_showcase: "", schedule_workshop: "Lunes a Viernes 07:30am - 10:00am Sábados 10:00am – 1:00pm Domicilios 10:00am - 05:30pm", name: "Mazco (CALLE 98 CON 58)", id_city: 3, serv_venta: false, serv_taller: true, serv_repuestos: true, dir_vent: false, Cita_Previa: false, tel_ventas: false, email_ventas: false, dir_taller: "Calle 98A No. 58-63", tel_taller: "(601) 742-5711", sitio_web: "https://www.mazco.com.co/", lat: 4.687054, long: -74.065350, cod_conce: 390, cod_suc: 1 },
+        { id: 6, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 10:00am - 8:00pm Sábado 10:00am - 7:00pm Domingo 10:00am - 6:00pm", schedule_workshop: "Recepción de vehículos con cita: Lunes a sábado 10:00am - 7:00pm", name: "Madiautos (Morato)", id_city: 3, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Av. Carrera 70 No. 96-05", Cita_Previa: false, tel_ventas: "(601) 624-4557 ", email_ventas: "servicioalcliente@madiautos.com", dir_taller: "Av. Carrera 70 No. 96-05", tel_taller: "(601) 624-4557", cel_taller: false, sitio_web: "http://www.madiautos.com.co/nuevos-mazda/", lat: 4.692532, long: -74.078343, cod_conce: 350, cod_suc: 1 },
+        { id: 7, check_osv: true, check_owv: false, osv: true, owv: false, open_showcase: "Abierta", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "Lunes a Sábado 9:00am - 6:00pm  Domingo y Festivos 10:00am - 5:00pm", schedule_workshop: "", name: "CasaToro (Bella suiza)", id_city: 3, serv_venta: true, serv_taller: false, serv_repuestos: false, dir_vent: "Carrera 7 No. 127C-25", Cita_Previa: false, tel_ventas: "#525 - (601) 743-0815 ", email_ventas: false, dir_taller: false, tel_taller: false, cel_taller: false, email_taller: false, sitio_web: "https://mazda.casatoro.com/", lat: 4.705770, long: -74.028784, cod_conce: 340, cod_suc: 1 },
+        { id: 8, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes - Viernes 8:00am - 6:00pm Sábado 9:00am - 4:00pm Domingo - Festivo 10:30am - 3:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 5:00pm Sábado 8:00am - 1:00pm", name: "CasaToro Centro Motor (CARRERA 30)", id_city: 3, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 30 No. 22B-51", Cita_Previa: false, tel_ventas: "#525 - (601) 743-0815", email_ventas: false, dir_taller: "Carrera 30 No. 22B-51", tel_taller: "#525 - (601) 743-0815 ", sitio_web: "https://mazda.casatoro.com/", lat: 4.622904, long: -74.084966, cod_conce: 340, cod_suc: 2 },
+        { id: 16, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 09:00am - 7:00pm - Sábados - Domingos y festivos de 10:00am - 6:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 6:00pm Sábado 8:00am - 1:00pm", name: "Kyoto Motors (Av. Carrera 68 con 20)", id_city: 3, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Av. Carrera 68 No. 20-41", Cita_Previa: false, tel_ventas: "(601) 447-3801", cel_ventas: false, email_ventas: "hablemos@kyotomotors.com.co", dir_taller: "Av. Carrera 68A No. 20-28", tel_taller: "(601) 447-3801", sitio_web: "http://www.kyotomotors.com.co/", lat: 4.644654, long: -74.111484, cod_conce: 375, cod_suc: 1 },
+        //{ id: 49, check_osv: false, check_owv: false ,osv: false, owv: false ,open_showcase: "abierto", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "Lunes a Sábado 10:00am - 07:00pm", schedule_workshop: "Lunes a Sábado 10:00am - 07:00pm",  name: "Casatoro (Carrera 50 con 15)", id_city: 3, serv_venta: false, serv_taller: false, serv_repuestos: true, dir_vent: false, tel_ventas: false, email_ventas: false, dir_taller: "Carrera 50 No. 15-15",Cita_Previa: false, tel_taller: "#525 - (601) 743-0815", sitio_web: "https://mazda.casatoro.com/", lat: 4.633638, long: -74.103732, cod_conce: 340, cod_suc: 8 },
+        { id: 50, check_osv: false, check_owv: true, osv: false, owv: true, open_showcase: "Cerrado", open_workshop: "Abierto", schedule_showcase: "Lunes a Sábado 12:00pm - 08:00pm Domingo 12:00pm - 06:00pm", schedule_workshop: "Lunes a Viernes  07:00am - 05:00pm  Sábados 7:00am - 01:00pm", name: "Casatoro (Carrera 7 con 155)", id_city: 3, serv_venta: false, serv_taller: true, serv_repuestos: true, dir_vent: false, tel_ventas: false, email_ventas: false, dir_taller: "Carrera 7 No. 155-67", Cita_Previa: false, tel_taller: "#525 - (601) 743-0815", sitio_web: "https://mazda.casatoro.com/", lat: 4.730382, long: -74.024298, cod_conce: 340, cod_suc: 4 },
+        { id: 53, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Sábado 9:00 AM- 6:00 PM  Domingos y Festivos 10:00 AM-4:00 PM", schedule_workshop: "Lunes a Viernes  7:30am - 05:00pm Sábado 9:00am - 01:00pm", name: "Casatoro (Calle 170 con av. Boyacá)", id_city: 3, serv_venta: false, serv_taller: true, serv_repuestos: true, dir_vent: "Av. Boyaca No. 170-51", tel_ventas: "#525 - (601) 7430815", email_ventas: false, dir_taller: "Av. Boyaca No. 170-51", Cita_Previa: false, tel_taller: false, sitio_web: "https://mazda.casatoro.com/", lat: 4.76127, long: -74.06513, cod_conce: 340, cod_suc: 7 },
+
+
+        //Bucaramanga
+        { id: 33, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 6:00pm Sábado 8:00am- 5:00pm", schedule_workshop: "Lunes a Viernes 6:00am - 5:30pm Sábado 6:00am - 12:00pm", name: "Mayorautos ", id_city: 18, serv_venta: false, serv_taller: false, serv_repuestos: false, dir_vent: "Carrera 27 No. 40-12", Cita_Previa: false, tel_ventas: "(607) 632-3434 ", email_ventas: false, dir_taller: "Carrera 26 No. 40-17", tel_taller: "(607) 632-3434 ", sitio_web: "http://www.mayorautos.com/", lat: 7.119700, long: -73.115391, cod_conce: 270, cod_suc: 1 },
+        //Cali
+
+        { id: 24, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lun a Viernes 8:00am – 6:00pm", schedule_workshop: "Lunes a viernes de 6:00am - 6:00pm Sábado de 8:00am - 4:00pm", name: "Mazko (Carrera 100 No. 12)", id_city: 21, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 100 No. 12-90", Cita_Previa: false, tel_ventas: "(602) 485-3800 ", email_ventas: "contactenos.mazda@massygroup.com", dir_taller: "Carrera 100 No. 12-90", tel_taller: "3057342870 ", sitio_web: "https://mazkomazda.com/", lat: 3.371179, long: -76.538211, cod_conce: 620, cod_suc: 1 },
+        { id: 26, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am – 6:00pm", schedule_workshop: "Lunes a sábado de 6:00am - 6:00pm Domingo de 8:00am - 4:00pm", name: "Mazko (Av. 3N No. 34)", id_city: 21, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Avenida 3 Norte No. 34-46", Cita_Previa: false, tel_ventas: "(602) 485-3800 ", email_ventas: "contactenos.mazda@massygroup.com", dir_taller: "Avenida 3 Norte No. 34-46", tel_taller: "3057342870 ", sitio_web: "https://mazkomazda.com/", lat: 3.471983, long: -76.520805, cod_conce: 620, cod_suc: 2 },
+        { id: 54, check_osv: false, check_owv: true, osv: false, owv: true, open_showcase: "Cerrado", open_workshop: "Abierto", schedule_showcase: "" /*schedule_showcase: "Lunes a Sábado 6:00am - 6:00pm"*/ , schedule_workshop: "Lunes a viernes de 6:00am - 6:00pm Domingo de 8:00am - 4:00pm", name: "Mazko (Calle 5 No. 67-26)", id_city: 21, serv_venta: false, serv_taller: true, serv_repuestos: true, dir_vent: "", Cita_Previa: false, tel_ventas: "", email_ventas: "contactenos.mazda@massygroup.com", dir_taller: "Calle 5 No. 67-26", tel_taller: "3057342870", sitio_web: "https://mazkomazda.com/", lat: 3.39611, long: -76.54652, cod_conce: 620, cod_suc: 4 },
+
+
+        //Cartagena     
+        { id: 44, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 6:00pm Sábado  8:00am - 4:00pm", schedule_workshop: "Lunes a Viernes  7:00am - 12:00am  2:00pm - 6:00pm  Sábado 8:00am - 1:00pm", name: "Vardí ", id_city: 4, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Avenida Pedro de Heredia Calle 30 No. 37-07", Cita_Previa: false, tel_ventas: "01-8000-411919 - Fijo: (605) 4866874 - WhatsApp: 3134803967", email_ventas: false, dir_taller: "Avenida Pedro de Heredia Calle 30 No. 37-07", tel_taller: "01-8000-411919 - Fijo: (605) 4866874 - WhatsApp: 3134803967", sitio_web: "https://www.mazdavardi.com.co/", lat: 10.409304, long: -75.516153, cod_conce: 300, cod_suc: 2 },
+        //Chía
+
+        { id: 42, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Sábado 9:00am - 6:00pm  Domingo 10:00am - 5:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 1:00pm - 2:00pm - 5:00pm Sábados 8:00am - 1:00pm", name: "Vardí (km 2.5 variante Chía-Cajicá)", id_city: 10, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Km 2.5 Vía Chía Cajicá, Costado Occidental", Cita_Previa: false, tel_ventas: "01-8000-411919 - Fijo: (601) 4866874 - WhatsApp: 3134803967", email_ventas: "contacto@grupovardi.com.co", dir_taller: "Km 2.5 Vía Chía Cajicá, Costado Occidental Centro Empresarial Millenium, Bodega 4", tel_taller: "01-8000-411919 - Fijo: (601) 4866874 - WhatsApp: 3134803967", sitio_web: "https://www.mazdavardi.com.co/", lat: 4.880635, long: -74.038063, cod_conce: 300, cod_suc: 1 },
+        //Cúcuta
+
+        { id: 32, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 6:00pm Sábado 8:00am - 5:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 12:00pm - 2:00pm - 5:30pm Sábado 7:00am - 12:00pm", name: "Mayorautos", id_city: 15, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Autopista Internacional Vía San Antonio Km 3 No. 25N-125", Cita_Previa: false, tel_ventas: "(607) 596-0260", email_ventas: false, dir_taller: "Autopista Internacional Vía San Antonio Km 3 No. 25N-125", tel_taller: "(607) 596-0260", email_taller: false, sitio_web: "http://www.mayorautos.com/", lat: 7.8609700, long: -72.479725, cod_conce: 270, cod_suc: 2 },
+
+        //Ibagué
+        { id: 9, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a sábado 8:00 am-6:00 pm Domingos y festivos: 10:00am -3:00 pm", schedule_workshop: "Lunes- Viernes  07:30 AM- 5:00PM Y Sábado 08:00AM -01:00PM", name: "CasaToro", id_city: 20, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 48 Sur No. 116-143", Cita_Previa: false, tel_ventas: "#525 - (608) 743-0815", email_ventas: false, dir_taller: "Carrera 48 Sur No. 116-143", tel_taller: "#525 - (608) 743-0815", sitio_web: "https://mazda.casatoro.com/", lat: 4.407658, long: -75.166069, cod_conce: 340, cod_suc: 6 },
+        //Manizales
+        { id: 28, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 12:00pm - 2:00pm - 6:00pm Sábado 9:00am - 1:00pm", schedule_workshop: "Lunes a Viernes: 7:00am - 12:00pm - 2:00pm - 6:00pm Sábado 8:00am - 1:00pm", name: "Colautos", id_city: 6, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 23 No. 36-65 Av. Santander", tel_ventas: "310 664 9904 / 01 8000 423 317 ", Cita_Previa: false, email_ventas: "servicioalcliente@colautos.co", dir_taller: "Carrera 23 No. 36-65 Av. Santander", tel_taller: "310 664 9904 / 01 8000 423 317 ", sitio_web: "https://colautosdelcafe.com/", lat: 5.067242, long: -75.506993, cod_conce: 420, cod_suc: 1 },
+
+        //Medellín
+        { id: 14, check_osv: false, check_owv: false, osv: false, owv: false, open_showcase: "Cerrado", open_workshop: "Cerrado", schedule_showcase: "Lunes a Jueves 8:00am - 3:00pm", schedule_workshop: "Lunes a Jueves 6:00am - 3:00pm", name: "Automontaña (Calle 30)", id_city: 1, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Calle 29 No. 43A-29", Cita_Previa: false, tel_ventas: "(604) 3547800", email_ventas: false, dir_taller: "Calle 29 No. 43A-05", tel_taller: "3057342392", sitio_web: "https://www.automontana.com/", lat: 6.227427, long: -75.569793, cod_conce: 130, cod_suc: 1 },
+        { id: 15, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Domingo 9:00am - 5:00pm", schedule_workshop: "Lunes a Sábado 10:00am - 7:00pm Domigos-Festivo 11:00am - 7:00pm", name: "Automontaña (C.C. Mayorca)", id_city: 1, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Calle 51 Sur No. 48-57 C.C. Mayorca, Local 4057", Cita_Previa: false, tel_ventas: "(604) 3665690", email_ventas: false, dir_taller: "Calle 51 Sur No. 48-57 C.C. Mayorca, Sótano Etapa 2, Local 9947", tel_taller: "3057342392", sitio_web: "https://www.automontana.com/", lat: 6.160566, long: -75.604654, cod_conce: 130, cod_suc: 2 },
+        { id: 31, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 5:30pm / Sábado 9:00am - 2:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 12:00pm  1:00pm - 4:30pm  Sábado 7:00Am  12:30pm", name: "Somerauto (Av. Las Vegas con 10)", id_city: 1, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 48 No. 10-168", Cita_Previa: false, tel_ventas: "(604) 448-2102", email_ventas: "vannesa.fernandez@somerauto.com.co", dir_taller: "Carrera 48 No. 14-16", tel_taller: "(604) 448-2102 Ext: 133", cel_taller: false, sitio_web: "http://www.somerauto.com.co/", lat: 6.215084, long: -75.575685, cod_conce: 140, cod_suc: 1 },
+        { id: 30, check_osv: true, check_owv: false, osv: true, owv: false, open_showcase: "Abierta", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "Lunes a Domingo 10:00am - 7:00pm", schedule_workshop: "Lunes a Viernes 8:30am - 6:00pm / Sábado - Domingo y Festivos 9:00am - 2:00pm", name: "Somerauto (C.C Viva Envigado)", id_city: 1, serv_venta: true, serv_taller: false, serv_repuestos: false, dir_vent: "Carrera 48 No. 32B Sur-139, Local 349", Cita_Previa: false, tel_ventas: "(604) 448-2102", email_ventas: "vannesa.fernandez@somerauto.com.co", dir_taller: false, tel_taller: false, sitio_web: "http://www.somerauto.com.co/", lat: 6.177064, long: -75.592174, cod_conce: 140, cod_suc: 2 },
+        { id: 4, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 5:00pm - Sábado 9:00am - 4:00pm", schedule_workshop: "Lunes a Viernes 6:00am - 12:30pm - 1:30pm - 5:00pm - Sánado 7:00am - 12:00pm", name: "Vehículos Del Camino (Av. El poblado)", id_city: 1, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Avenida El Poblado Carrera 43B No. 17-221", Cita_Previa: false, tel_ventas: "(604) 605-0025", cel_ventas: false, email_ventas: "asesorvirtual@vehicamino.com", dir_taller: "Avenida El Poblado Carrera 43B No. 17-221", tel_taller: "(604) 605-2494", sitio_web: "https://vehiculosdelcamino.com/mazda/", lat: 6.219850, long: -75.569775, cod_conce: 150, cod_suc: 1 },
+        { id: 5, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 6:00pm - Sábado 10:00am - 4:00pm - Domingo 11:00am - 3:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 5:00pm Sábado 8:00am - 12:00pm", name: "Vehículos Del Camino (Llanogrande)", id_city: 1, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Sector Tres Puertas, Km 3 Vía Llanogrande", Cita_Previa: false, tel_ventas: "(604) 605-0025", cel_ventas: false, email_ventas: "asesorvirtual@vehicamino.com", dir_taller: "Llanogrande - Sector Tres Puertas-km 3 vía Llanogrande ", tel_taller: "(604) 605-2494", sitio_web: "https://vehiculosdelcamino.com/mazda/", lat: 6.123440, long: -75.423559, cod_conce: 150, cod_suc: 3 },
+
+        //Montería
+        { id: 46, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 12:00pm - 2:00pm - 6:00pm,  Sábado 8:00am - 1:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 12:00pm - 2:00pm - 6:00pm  Sábado 8:00am - 1:00pm", name: "Vardí", id_city: 9, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 6A No. 73-20, Local C-2", Cita_Previa: false, tel_ventas: "01-8000-411919 - Fijo: (604) 4866874 - WhatsApp: 3134803967", email_ventas: "contacto@grupovardi.com.co", dir_taller: "Calle 77 No. 5-172 Urbanización San Francisco", tel_taller: false, sitio_web: "https://www.mazdavardi.com.co/", lat: 8.785180, long: -75.860311, cod_conce: 300, cod_suc: 4 },
+        //Neiva
+        { id: 10, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 6:00pm Sábado 8:00am - 1:00pm Domingo y Festivos 10:00am - 03:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 5:00pm  Sábado 8:00am - 1:30pm", name: "Casatoro ", id_city: 11, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 5 No. 26-212 Sur", Cita_Previa: false, tel_ventas: "#525 - (608) 743-0815 ", email_ventas: false, dir_taller: "Carrera 5 No. 26-212 Sur", tel_taller: "#525 - (608) 743-0815 ", sitio_web: "https://mazda.casatoro.com/", lat: 2.901853, long: -75.281691, cod_conce: 340, cod_suc: 5 },
+        //Pasto
+
+        { id: 36, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 7:00pm Sábado 9:00am - 7:00pm Domingo y Festivos 9:00am - 1:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 12:00pm - 2:00pm - 6:00pm, Sábado 8:30am - 2:00pm", name: "Automotriz Del Sur ", id_city: 14, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Av. Panamericana Calle 2 No. 26-52, Antiguo Cresemillas", Cita_Previa: false, tel_ventas: "(602) 731-2090", email_ventas: false, dir_taller: "Av. Panamericana Calle 2 No. 26-52, Antiguo Cresemillas", tel_taller: "(602) 731-2090", sitio_web: "https://automotrizdelsur.com/mazda/", lat: 1.209312, long: -77.289929, cod_conce: 710, cod_suc: 1 },
+
+        //Pereira
+        { id: 17, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 12:00pm - 2:00p.m - 6:00pm Sábado 9:00am - 1:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 12:00p.m, 2:00pm - 6:00pm Sábado 8:00am - 1:00pm", name: "Colautos S.A", id_city: 23, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Avenida 30 de Agosto No. 41-71", Cita_Previa: false, tel_ventas: "310 664 9904 / 01 8000 423 317 ", email_ventas: "servicioalcliente@colautos.co", dir_taller: "Carrera 11 Bis N° 41-72 ", tel_taller: "310 664 9904 / 01 8000 423 317", sitio_web: "https://colautosdelcafe.com/", lat: 4.813698, long: -75.713537, cod_conce: 420, cod_suc: 4 },
+        //Popayán
+        { id: 47, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 6:00pm Sábado 9:00am - 3:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 12:00pm - 2:00pm - 5:30pm Sábado 8:00am - 1:00pm", name: "Vardí", id_city: 25, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 9 No. 17N-35 Barrio Antonio Nariño", Cita_Previa: "01-8000-411919", tel_ventas: "01-8000-411919 - Fijo: (602) 4866874 - WhatsApp: 3134803967", email_ventas: "contacto@grupovardi.com.co", dir_taller: "Carrera 9 No. 17N-35 Barrio Antonio Nariño", tel_taller: "01-8000-411919 - Fijo: (602) 4866874 - WhatsApp: 3134803967", sitio_web: "https://www.mazdavardi.com.co/", lat: 2.455137, long: -76.598101, cod_conce: 300, cod_suc: 6 },
+        //Santa Marta
+
+        { id: 43, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 12:00pm - 2:00pm - 6:00pm Sábado 8:00am - 1:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 12:00pm - 2:00pm - 6:00pm Sábado 8:00am - 1:00pm", name: "Vardí", id_city: 12, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Avenida Ferrocarril #29-126, Prado", Cita_Previa: false, tel_ventas: "01-8000-411919 - Fijo: (605) 4866874 - WhatsApp: 3134803967", email_ventas: "contacto@grupovardi.com.co", dir_taller: "Avenida Ferrocarril #29-126, Prado", tel_taller: "01-8000-411919 - Fijo: (605) 4866874 - WhatsApp: 3134803967", sitio_web: "https://www.mazdavardi.com.co/", lat: 11.231823652436349, long: -74.20039617338497, cod_conce: 300, cod_suc: 3 },
+
+        //Sincelejo
+        { id: 45, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 12:00pm - 2:00pm - 6:00pm Sábado 8:00am - 1:00pm", schedule_workshop: "Lunes a Viernes 7:30am - 12:00pm - 2:00pm - 6:00pm Sábado 8:00am - 1:00pm", name: "Vardí", id_city: 19, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Transversal 28 No. 27A-40 Barrio Venecia", Cita_Previa: false, tel_ventas: "01-8000-411919 - Fijo: (605) 4866874 - WhatsApp: 3134803967", email_ventas: "contacto@grupovardi.com.co", dir_taller: "Transversal 28 No. 27A-40 Barrio Venecia", tel_taller: false, sitio_web: "https://www.mazdavardi.com.co/", lat: 9.303475, long: -75.379478, cod_conce: 300, cod_suc: 5 },
+        //Tunja
+        { id: 1, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am - 12:30pm - 2:00pm - 6:00pm Sábado 8:00am - 4:00pm", schedule_workshop: "Lunes a Viernes 8:00am - 12:30pm - 2:00pm - 6:00pm  Sábado 8:00am - 1:00pm", name: "Carrazos S.A.S", id_city: 5, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Calle 53 No. 5-98 Barrio La Granja", Cita_Previa: false, tel_ventas: "(608) 7405959", email_ventas: "informacion@carrazos.com.co", dir_taller: "Calle 53 No. 5-98 Barrio La Granja", tel_taller: "(608) 7405959", sitio_web: "https://carrazos.com.co/mazda/", lat: 5.560631, long: -73.347766, cod_conce: 720, cod_suc: 1 },
+        //Valledupar
+
+        { id: 35, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 7:00am - 6:00pm Sábado 8:00am-1:00pm", schedule_workshop: "Lunes a Viernes 7:00am - 5:00pm Sábado 7:00am - 12:00pm", name: "Mayorautos", id_city: 8, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 7A No. 20D-29", Cita_Previa: false, tel_ventas: "(605) 580-6960", email_ventas: false, dir_taller: "Carrera 7A No. 20D-29", tel_taller: "(605) 580-6960", sitio_web: "http://www.mayorautos.com/", lat: 10.465009, long: -73.243191, cod_conce: 270, cod_suc: 3 },
+
+        //Villavicencio
+        { id: 13, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am- 06:00pm  Sábado 9:00am - 4:30pm", schedule_workshop: "Lunes a Viernes 7:30am - 5:30pm Sábado 8:00am - 1:00pm", name: "CasaToro", id_city: 13, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Anillo Vial Vía Acacías, Km 1", Cita_Previa: false, tel_ventas: "#525 - (608) 743-0815", email_ventas: false, dir_taller: "Anillo Vial Vía Acacías, Km 1", tel_taller: "#525 - (608) 743-0815", sitio_web: "https://mazda.casatoro.com/", lat: 4.114376, long: -73.632674, cod_conce: 340, cod_suc: 3 },
+        //Yopal
+        { id: 40, check_osv: true, check_owv: true, osv: true, owv: true, open_showcase: "Abierto", open_workshop: "Abierto", schedule_showcase: "Lunes a Viernes 8:00am -5:00pm  Sábados  10:00am - 1:00pm", schedule_workshop: "Lunes a Viernes 7:30am -6:00pm  Sábados  7:30am - 1:00pm", name: "Alciautos", id_city: 7, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 19 No 21-05", Cita_Previa: false, tel_ventas: "01 8000 127080", cel_ventas: false, email_ventas: false, dir_taller: "Carrera 19 No 21-05", tel_taller: "01 8000 127080", sitio_web: "https://alciautosmazda.com/", lat: 5.337545, long: -72.396100, cod_conce: 330, cod_suc: 3 },
+
+        //{ id: 18, check_osv: false, check_owv: false, osv: false, owv: false, open_showcase: "Cerrado", open_workshop: "Cerrado / Atención telefónica", schedule_showcase: "", schedule_workshop: "", name: "Mazautos", id_city: 24, serv_venta: true, serv_taller: true, serv_repuestos: true, dir_vent: "Carrera 40 # 46-17", Cita_Previa: false, tel_ventas: "2359848", email_ventas: "servicioalcliente@mazautos.com", dir_taller: "Calle 5 No. 67-26", tel_taller: "2359848", sitio_web: "https://mazautos.co/2018/", lat: 4.064880, long: -76.195746, cod_conce: 610, cod_suc: 1 },
+
+    ];
+
+    navigator.geolocation.getCurrentPosition(addUserPosition);
+
+    if (window.location.search != "") {
+        var paramsURL = window.location.search.split('?')[1];
+        var arrayParamas = paramsURL.split('&');
+        if (arrayParamas.length >= 1) {
+            var variable_mazco = arrayParamas[0].split('=')[0];
+            var valor_mazco = arrayParamas[0].split('=')[1];
+            if (variable_mazco == 'mazco_service') {
+                var filters = {
+                    'serv_taller': true,
+                };
+                if (filters.serv_taller) {
+                    $scope.concecionarios = $scope.concecionarios
+                        .filter(item => item.id_city == $scope.city_selected)
+                        .filter(item => filters.serv_taller == item.serv_taller)
+                    return $scope.concecionarios
+                }
+            }
+        }
+    }
+
+    function addUserPosition(data) {
+        console.log(data);
+        console.log(data.coords);
+    };
+
+    function showSites(event, con) {
+        $scope.con = con;
+        $scope.map.showInfoWindow('bar', this);
+    };
+
+    function customShowSites(event, con) {
+        $(".map-list-item").removeClass('active');
+        $scope.con = con;
+        $scope.map.showInfoWindow('bar', 'foo' + con.id);
+        document.querySelector('#content-map').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    function connFiltered() {
+
+        var filters = {
+            'serv_venta': $scope.filters['serv_venta'],
+            'serv_taller': $scope.filters['serv_taller'],
+        };
+
+        if (!filters.serv_venta && !filters.serv_taller) {
+            return $scope.concecionarios
+                .filter(item => item.id_city == $scope.city_selected);
+
+        }
+
+        if (filters.serv_venta) {
+            return $scope.concecionarios
+                .filter(item => item.id_city == $scope.city_selected)
+                .filter(item => filters.serv_venta == item.serv_venta)
+        }
+
+        if (filters.serv_taller) {
+            return $scope.concecionarios
+                .filter(item => item.id_city == $scope.city_selected)
+                .filter(item => filters.serv_taller == item.serv_taller)
+        }
+
+        // .filter(item => filters.serv_taller ? item.serv_taller == filters.serv_taller : true)
+        return $scope.concecionarios;
+    };
+
+    function checkAll() {
+
+        var allState = false;
+
+        $scope.filters = {
+            'serv_venta': false,
+            'serv_taller': false,
+            'serv_repuestos': false,
+        };
+    };
+
+    function checkOne(filter) {
+        var opBool = $scope.filters[filter];
+        $scope.checkAll();
+        $scope.filters[filter] = !opBool;
+    };
+
+    function getCenter() {
+        var city = $scope.citys_array.filter(c => { return c.id == $scope.city_selected })[0]
+        return city.lat + ',' + city.long;
+    };
+
+};

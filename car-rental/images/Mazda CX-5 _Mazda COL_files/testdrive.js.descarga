@@ -1,0 +1,417 @@
+(function () {
+    angular.module("appTest", [])
+        .controller('ValidationController', ['$scope', '$http', function ($scope, $http) {
+            var ip = false;
+            $scope.pattern_email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            $scope.pattern_phone = /^([0-9]{7})$|(^[0-9]{10})$/
+            $scope.flag_redir = false;
+            $scope.modelCarInit = "";
+            $scope.UtmFuente = "";
+            $scope.UtmMedio = "";
+            $scope.UtmCampana = "";
+
+            if (window.location.search != "") {
+                var paramsURL = window.location.search.split('?')[1];
+                var arrayParamas = paramsURL.split('&');
+                if (arrayParamas.length > 1) {
+                    var val1 = arrayParamas[0].split('=')[0];
+                    var val2 = arrayParamas[1].split('=')[0];
+                    var val3 = arrayParamas[2].split('=')[0];
+                    if (val1 == "utm_source" && val2 == "utm_medium" && val3 == "utm_campaign") {
+                        $scope.UtmFuente = arrayParamas[0].split('=')[1];
+                        $scope.UtmMedio = arrayParamas[1].split('=')[1];
+                        $scope.UtmCampana = arrayParamas[2].split('=')[1];
+
+                    }
+                    var con = arrayParamas[0].split('=')[1];
+                    var sec = arrayParamas[1].split('=')[1];
+                }
+            }
+
+            $scope.citys_array = [
+                { id: 1, name: 'Armenia' },
+                { id: 2, name: 'Barrancabermeja' },
+                { id: 3, name: 'Barranquilla' },
+                { id: 4, name: 'Bogotá D.C' },
+                { id: 5, name: 'Bucaramanga' },
+                { id: 6, name: 'Cali' },
+                { id: 7, name: 'Cartagena' },
+                { id: 24, name: 'Chía' },
+                { id: 8, name: 'Cúcuta' },
+                { id: 9, name: 'Ibagué' },
+                { id: 10, name: 'Manizales' },
+                { id: 11, name: 'Medellín' },
+                { id: 12, name: 'Montería' },
+                { id: 13, name: 'Neiva' },
+                { id: 14, name: 'Pasto' },
+                { id: 15, name: 'Pereira' },
+                { id: 16, name: 'Popayán' },
+                { id: 17, name: 'Santa Marta' },
+                { id: 18, name: 'Sincelejo' },
+                { id: 19, name: 'Tunja' },
+                { id: 21, name: 'Valledupar' },
+                { id: 22, name: 'Villavicencio' },
+                { id: 23, name: 'Yopal' },
+
+
+            ];
+            $scope.concecionarios_random = [];
+            $scope.concecionarios = [
+                { id_city: 1, cod_conce: 420, cod_suc: 2, name: "Colautos " },
+                { id_city: 2, cod_conce: 270, cod_suc: 4, name: "Mayorautos" },
+                { id_city: 3, cod_conce: 540, cod_suc: 1, name: "Janna Motors" },
+                { id_city: 4, cod_conce: 330, cod_suc: 1, name: "Alciautos" },
+                { id_city: 4, cod_conce: 340, cod_suc: 1, name: "CasaToro" },
+                { id_city: 4, cod_conce: 385, cod_suc: 1, name: "Jorge Cortés" },
+                { id_city: 4, cod_conce: 375, cod_suc: 1, name: "Kyoto Motors" },
+                { id_city: 4, cod_conce: 350, cod_suc: 1, name: "Madiautos" },
+                { id_city: 4, cod_conce: 360, cod_suc: 1, name: "Motovalle" },
+                { id_city: 5, cod_conce: 270, cod_suc: 1, name: "Mayorautos" },
+                { id_city: 6, cod_conce: 620, cod_suc: 1, name: "Mazko" },
+                { id_city: 7, cod_conce: 300, cod_suc: 2, name: "Vardí" },
+                { id_city: 24, cod_conce: 300, cod_suc: 1, name: "Vardí" },
+                { id_city: 8, cod_conce: 270, cod_suc: 2, name: "Mayorautos " },
+                { id_city: 9, cod_conce: 340, cod_suc: 6, name: "CasaToro" },
+                { id_city: 10, cod_conce: 420, cod_suc: 1, name: "Colautos" },
+                { id_city: 11, cod_conce: 130, cod_suc: 1, name: "Automontaña" },
+                { id_city: 11, cod_conce: 140, cod_suc: 1, name: "Somerauto" },
+                { id_city: 11, cod_conce: 150, cod_suc: 1, name: "Vehículos Del Camino" },
+                { id_city: 12, cod_conce: 300, cod_suc: 4, name: "Vardí" },
+                { id_city: 13, cod_conce: 340, cod_suc: 5, name: "CasaToro " },
+                { id_city: 14, cod_conce: 710, cod_suc: 1, name: "Automotriz Del Sur" },
+                { id_city: 15, cod_conce: 420, cod_suc: 4, name: "Colautos S.A" },
+                { id_city: 16, cod_conce: 300, cod_suc: 6, name: "Vardí" },
+                { id_city: 17, cod_conce: 300, cod_suc: 3, name: "Vardí" },
+                { id_city: 18, cod_conce: 300, cod_suc: 5, name: "Vardí" },
+                { id_city: 25, cod_conce: 610, cod_suc: 1, name: "Mazautos" },
+                { id_city: 19, cod_conce: 720, cod_suc: 1, name: "Carrazos" },
+                { id_city: 21, cod_conce: 270, cod_suc: 3, name: "Mayorautos" },
+                { id_city: 22, cod_conce: 340, cod_suc: 3, name: "CasaToro" },
+                { id_city: 23, cod_conce: 330, cod_suc: 3, name: "Alciautos" }
+            ]
+
+
+            var conce_return = null;
+
+            if (sec && con) {
+                conce_return = $scope.concecionarios.filter(function (c) {
+                    return c.cod_suc == sec && c.cod_conce == con;
+                });
+                if (conce_return.length != 0) {
+                    $scope.city_selected = conce_return[0].id_city ? conce_return[0].id_city : undefined;
+                    $scope.conce_selected = conce_return[0] ? conce_return[0] : {};
+                }
+            }
+
+
+            $scope.minCapacityNumber = 5;
+            $scope.maxCapacitynumber = 10;
+            $scope.minFirstname = 4;
+            $scope.changeTypeDoc = function () {
+                if ($scope.dataAgen.legalDocument == "CE") {
+                    $scope.minCapacityNumber = 8;
+                    $scope.maxCapacitynumber = 10;
+                }
+                if ($scope.dataAgen.legalDocument == "CD") {
+                    $scope.minCapacityNumber = 6;
+                    $scope.maxCapacitynumber = 10;
+                }
+                if ($scope.dataAgen.legalDocument == "PD") {
+                    $scope.minCapacityNumber = 8;
+                    $scope.maxCapacitynumber = 10;
+                }
+                if ($scope.dataAgen.legalDocument == "PP") {
+                    $scope.minCapacityNumber = 8;
+                    $scope.maxCapacitynumber = 10;
+                }
+            };
+
+            $scope.randomList = function (list) {
+                return list.sort(function () {
+                    return 0.5 - Math.random();
+                });
+            }
+            $scope.setConce = function () {
+                $scope.concecionarios_random = $scope.randomList($scope.concecionarios);
+            }
+            $scope.setConce();
+
+
+
+
+            /*Create format hour*/
+            var today = new Date();
+            var y = today.getFullYear();
+            var m = today.getMonth() + 1;
+            var d = today.getDate();
+            var hms_ap_pm = today.toLocaleTimeString('en-US', { hour12: true });
+            var dateRegister = m + "/" + d + "/" + y + " " + hms_ap_pm
+            dateRegister = dateRegister.replace('.', '');
+            dateRegister = moment(dateRegister).format("M/D/YYYY h:mm:ss A");
+
+
+            /** Function to return mess validation*/
+            $scope.messValidate = "";
+            $scope.messValidateTel = "";
+
+            $scope.validationMess = function (touched, invalid, error, typeField, minChar) {
+                if (typeField == "doc") {
+                    if (touched == true && invalid == true && error.minlength != true) {
+                        $scope.messValidate = "Ingresa un número de documento";
+                    }
+                    if (touched == true && invalid == true && error.minlength == true) {
+                        $scope.messValidate = "Debe contener minimo " + minChar + " caracteres";
+                    }
+                    if (touched == true && invalid == false) {
+                        $scope.messValidate = "";
+                    }
+                    return $scope.messValidate;
+                }
+                if (typeField == "tel") {
+                    if (touched == true && invalid == true && error.minlength != true) {
+                        $scope.messValidateTel = "Ingresa un teléfono";
+                    }
+                    if (touched == true && invalid == true && error.minlength == true) {
+                        $scope.messValidateTel = "Debe contener mínimo 7 dígitos en caso de télefono fijo, celular 10 dígitos";
+                    }
+                    if (touched == true && invalid == true && error.pattern == true) {
+                        $scope.messValidateTel = "Debe contener exactamente 7 o 10 dígitos";
+                    }
+                    if (touched == true && invalid == false) {
+                        $scope.messValidateTel = "";
+                    }
+                    return $scope.messValidateTel;
+                }
+                if (typeField == "firstname") {
+                    if (touched == true && invalid == true) {
+                        $scope.messValidateName = "Ingresa un nombre";
+                    }
+                    if (touched == true && invalid == true && error.minlength == true && error.minlength != undefined) {
+                        $scope.messValidateName = "El nombre debe contener como minimo 4 letras";
+                    }
+                    if (touched == true && invalid == false) {
+                        $scope.messValidateName = "";
+                    }
+                    return $scope.messValidateName;
+                }
+
+            }
+
+            $scope.getPixelUrl = function () {
+
+                var urlXaxis = "";
+                if ($scope.dataTest.modelsOfInterest != undefined && $scope.conce_selected.cod_conce != undefined) {
+                    urlXaxis = "https://secure.adnxs.com/px?id=1133278&order_id=" + $scope.dataTest.modelsOfInterest + "&value=" + $scope.conce_selected.cod_conce + "&t=2";
+                }
+                return urlXaxis;
+            }
+
+
+            $scope.redirectResponse = function (modelinter, flag_redir, modelCarRedir) {
+                var UrlRedirect = "";
+
+                if (modelinter == 26 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-2-sedan/gracias-por-tu-registro/";
+                } else if (modelinter == 8 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-2-sport/gracias-por-tu-registro/";
+                } else if (modelinter == 6 && flag_redir == true && modelCarRedir == "M3SP") {
+                    UrlRedirect = "/vehiculos/mazda-3-hatchback/gracias-por-tu-registro/";
+                } else if (modelinter == 6 && flag_redir == true && modelCarRedir == "M3SDG7") {
+                    UrlRedirect = "/vehiculos/mazda-3-sedan-nueva-generacion/gracias-por-tu-registro/";
+                } else if (modelinter == 6 && flag_redir == true && modelCarRedir == "M3SPG7") {
+                    UrlRedirect = "/vehiculos/mazda-3-sport-nueva-generacion/gracias-por-tu-registro/";
+                } else if (modelinter == 6 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-3-sedan/gracias-por-tu-registro/";
+                } else if (modelinter == 1 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-6/gracias-por-tu-registro/";
+                } else if (modelinter == 25 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-cx-3/gracias-por-tu-registro/";
+                } else if (modelinter == 4 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-cx-5/gracias-por-tu-registro/";
+                } else if (modelinter == 3 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-cx-9/gracias-por-tu-registro/";
+                } else if (modelinter == 2 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-mx-5/gracias-por-tu-registro/";
+                } else if (modelinter == 27 && flag_redir == false) {
+                    UrlRedirect = "/vehiculos/mazda-cx-30/gracias-por-tu-registro/";
+                } else {
+                    UrlRedirect = "/";
+                }
+
+                return window.location.href = UrlRedirect;
+            }
+
+
+            /*Functión that send data form*/
+            $scope.showGif = false;
+            $scope.showPixel = false;
+            $scope.serviceFormTest = function () {
+                $scope.showGif = true;
+
+                if ($scope.InputpolicyAcceptance != undefined) {
+                    $scope.dataTest.policyAcceptance = "0";
+                } else {
+                    $scope.dataTest.policyAcceptance = "1";
+                }
+                if ($scope.InputtestDriveAcceptance != undefined) {
+                    $scope.dataTest.testDriveAcceptance = "0";
+                } else {
+                    $scope.dataTest.testDriveAcceptance = "1";
+                }
+
+
+                /*get name city*/
+                var mycity = $scope.citys_array.filter(function (c) { return c.id == $scope.city_selected })[0];
+
+                /*Change value hostUrlmodel in agreement value model of onterest*/
+                var hostUrlModel = "";
+
+                if ($scope.dataTest.modelsOfInterest == 1) {
+                    hostUrlModel = "inscribeteMediacom";
+                } else if ($scope.dataTest.modelsOfInterest == 28) {
+                    $scope.flag_redir = true;
+                    $scope.dataTest.modelsOfInterest = "6";
+                    hostUrlModel = "testdriveMediacom";
+                    $scope.modelCarInit = "M3SP";
+                } else if ($scope.dataTest.modelsOfInterest == 28) {
+                    $scope.flag_redir = true;
+                    $scope.dataTest.modelsOfInterest = "6";
+                    hostUrlModel = "testdriveMediacomG7";
+                    $scope.modelCarInit = "M3SPG7";
+                } else if ($scope.dataTest.modelsOfInterest == 29) {
+                    $scope.flag_redir = true;
+                    $scope.dataTest.modelsOfInterest = "6";
+                    hostUrlModel = "testdriveMediacomG7";
+                    $scope.modelCarInit = "M3SDG7";
+                } else {
+                    hostUrlModel = "testdriveMediacom";
+                }
+
+                /** Assignment variables to send services MCSINCO*/
+                $scope.dataTest.user = "3Ct0sP561020Rp";
+                $scope.dataTest.password = "{GE!/8V58%24~>v";
+                $scope.dataTest.city = mycity.name;
+                $scope.dataTest.dealerCode = $scope.conce_selected.cod_conce;
+                $scope.dataTest.dealerBranchCode = $scope.conce_selected.cod_suc;
+                $scope.dataTest.dateCreated = dateRegister;
+                $scope.dataTest.hostUrl = hostUrlModel;
+                $scope.dataTest.dateEmailSend = dateRegister;
+                $scope.dataTest.token = Math.random().toString(12).substring(2, 23) + Math.random().toString(12).substring(2, 23);
+                $scope.dataTest.ip = ipScript;
+                $scope.dataTest.UtmFuente = $scope.UtmFuente;
+                $scope.dataTest.UtmMedio = $scope.UtmMedio;
+                $scope.dataTest.UtmCampana = $scope.UtmCampana;
+                /*Get data and convert en queryString*/
+
+
+                var queryString = $.param($scope.dataTest);
+
+                $scope.dataTest.estadoSend = "";
+                var dataMerge = {
+                    EMAIL: $scope.dataTest.privateEmail,
+                    NOMBRE: $scope.dataTest.firstName,
+                    APELLIDO: $scope.dataTest.surname,
+                    TELEFONO: $scope.dataTest.privateTelephone,
+                    FECHAREG: $scope.dataTest.dateCreated,
+                    MODELO: $scope.dataTest.modelsOfInterest,
+                    TDOCUMENTO: $scope.dataTest.legalDocument,
+                    DOCUMENTO: $scope.dataTest.legalDocumentNumber,
+                    IDFORM: $scope.dataTest.hostUrl,
+                    CIUDAD: $scope.dataTest.city,
+                    CONCESIONA: $scope.dataTest.dealerCode,
+                    POLITICAS: $scope.dataTest.testDriveAcceptance,
+                    TERMINOS: $scope.dataTest.policyAcceptance,
+                    FECHAENVIO: $scope.dataTest.dateEmailSend,
+                    IP: $scope.dataTest.ip,
+                    TOKEN: $scope.dataTest.token,
+                    SUCURSAL: $scope.dataTest.dealerBranchCode,
+                    ESTADO: $scope.dataTest.estadoSend
+                }
+
+                /*Send data Mailchimp*/
+                $.ajax({
+                    method: 'GET',
+                    url: 'https://mazda.us10.list-manage.com/subscribe/post-json?u=078cfb1fd376d69a165b26f31&amp;id=cc8db72c3d',
+                    data: dataMerge,
+                    cache: false,
+                    dataType: "jsonp",
+                    jsonp: "c", // trigger MailChimp to return a JSONP response
+                    contentType: "application/json; charset=utf-8",
+                    error: function (err) {
+                        alert("Could not connect to the registration server. Please try again later.");
+                    },
+                    success: function (data) {
+                        if (data.result != "success") {
+                            // Something went wrong, do something to notify the user. maybe alert(data.msg);
+                            //console.log('Something went wrong');
+                        } else {
+                            // It worked, carry on...
+                            //console.log('funciona');
+                        }
+                    },
+                    error: function (error) {
+                        //console.log(error);
+                    }
+                });
+
+
+
+                /*Send data REST*/
+                $.ajax({
+                    method: 'POST',
+                    url: 'https://prospectos.mazda.co/prospectosREST?' + queryString,
+                    headers: {
+                        'Accept': '*/*',
+                        'Content-Type': 'application/json'
+                    },
+                    data: {},
+                    type: 'json',
+                    success: function (response) {
+                        if (response.codigo == "OK") {
+                            $scope.showPixel = true;
+                            $scope.$apply();
+                            $scope.redirectResponse($scope.dataTest.modelsOfInterest, $scope.flag_redir, $scope.modelCarInit);
+                        }
+                    },
+                    error: function (error) {
+                        //console.log(error);
+                    },
+                    complete: function () {
+                        $("#loading-image").css("display", "none");
+                    }
+                });
+
+            }
+        }]).directive("onlyLetters", [function () {
+            return {
+                require: 'ngModel',
+                link: function (scope, element, attr, ngModelCtrl) {
+                    function fromUser(text) {
+                        var transformedInput = text.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚ\s]/g, '');
+                        if (transformedInput !== text) {
+                            ngModelCtrl.$setViewValue(transformedInput);
+                            ngModelCtrl.$render();
+                        }
+                        return transformedInput;
+                    }
+                    ngModelCtrl.$parsers.push(fromUser);
+                }
+            };
+        }]).directive("onlyNumbers", [function () {
+            return {
+                require: 'ngModel',
+                link: function (scope, element, attr, ngModelCtrl) {
+                    function fromUser(text) {
+                        var transformedInput = text.replace(/\D/g, '');
+                        //console.log(transformedInput);
+                        if (transformedInput !== text) {
+                            ngModelCtrl.$setViewValue(transformedInput);
+                            ngModelCtrl.$render();
+                        }
+                        return transformedInput;
+                    }
+                    ngModelCtrl.$parsers.push(fromUser);
+                }
+            };
+        }]);
+})()

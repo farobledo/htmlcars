@@ -1,0 +1,347 @@
+(function(){
+    angular.module("appLanding",[])
+      .controller('ValidationControllerLanding', ['$scope','$http',function($scope,$http){
+          var ip = false;
+          $scope.pattern_email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          $scope.pattern_phone = /^([0-9]{7})$|(^[0-9]{10})$/
+          $scope.citys_array = [
+            {id:1, name:'Armenia'}, 
+            {id:2, name:'Barracabermeja'},
+            {id:3, name:'Barranquilla'},
+            {id:4, name:'Bogotá D.C'},
+            {id:5, name:'Bucaramanga'},
+            {id:6, name:'Cali'},
+            {id:7, name:'Cartagena'},
+            {id:8, name:'Cúcuta'},
+            {id:9, name:'Ibagué'},
+            {id:10, name:'Manizales'},
+            {id:11, name:'Medellín'},
+            {id:12, name:'Montería'},
+            {id:13, name:'Neiva'},
+            {id:14, name:'Pasto'},
+            {id:15, name:'Pereira'},
+            {id:16, name:'Sabaneta'},
+            {id:17, name:'Santa Marta'},
+            {id:18, name:'Sincelejo'},
+            {id:19, name:'Tunja'},
+            {id:21, name:'Valledupar'},
+            {id:22, name:'Villavicencio'},
+            {id:23, name:'Yopal'},
+            {id:24, name:'Chía'},
+          ];
+          $scope.concecionarios = [
+            {id_city:1,cod_conce:420,cod_suc:2,name:"COLAUTOS S.A ARMENIA"},
+            {id_city:2,cod_conce:270,cod_suc:4,name:"MAYORAUTOS S.A.S BARRANCABERMEJA"},
+            {id_city:3,cod_conce:540,cod_suc:1,name:"JANNA MOTORS S.A"},
+            {id_city:4,cod_conce:330,cod_suc:1,name:"ALCIAUTOS S.A.S CALLE 134" },
+            {id_city:4,cod_conce:330,cod_suc:2,name:"ALCIAUTOS S.A.S. CENTRO MAYOR"},
+            {id_city:4,cod_conce:330,cod_suc:4,name:"ALCIAUTOS S.A.S. CALLE 13"},
+            {id_city:4,cod_conce:330,cod_suc:5,name:"ALCIAUTOS S.A.S. CALLE 96"},
+            {id_city:4,cod_conce:340,cod_suc:1,name:"CASATORO S.A CALLE 127"},
+            {id_city:4,cod_conce:340,cod_suc:2,name:"CASATORO S.A. CRA 30"},              
+            {id_city:4,cod_conce:350,cod_suc:1,name:"MADIAUTOS S.A.S"},
+            {id_city:4,cod_conce:360,cod_suc:1,name:"MOTORES DEL VALLE MOTOVALLE S.A.S."},
+            {id_city:4,cod_conce:370,cod_suc:1,name:"JORGE CORTES MORA Y CIA S.A.S AV. SUBA"},  
+            {id_city:4,cod_conce:375,cod_suc:1,name:"KYOTO MOTORS"},  
+            {id_city:4,cod_conce:370,cod_suc:2,name:"JORGE CORTES MORA Y CIA S.A.S CRA 7"},  
+            {id_city:5,cod_conce:270,cod_suc:1,name:"MAYORAUTOS S.A.S"},                 
+            {id_city:6,cod_conce:610,cod_suc:1,name:"MAZAUTOS"},   
+            {id_city:6,cod_conce:620,cod_suc:1,name:"MAZKO CRA 100 S.A.S"}, 
+            {id_city:6,cod_conce:620,cod_suc:2,name:"MAZKO S.A. SUCURSAL NORTE"},
+            {id_city:7,cod_conce:300,cod_suc:2,name:"AUTOVARDI CARTAGENA"}, 
+            {id_city:24,cod_conce:300,cod_suc:1,name:"AUTOVARDI S.A.S"}, 
+            {id_city:8,cod_conce:270,cod_suc:2,name:"MAYORAUTOS S.A.S CUCUTA"}, 
+            {id_city:9,cod_conce:340,cod_suc:6,name:"CASATORO IBAGUE"},    
+            {id_city:10,cod_conce:420,cod_suc:1,name:"COLAUTOS S.A."}, 
+            {id_city:11,cod_conce:130,cod_suc:1,name:"AUTOMONTAÑA S.A."},              
+            {id_city:11,cod_conce:140,cod_suc:1,name:"SOMERAUTO S.A."},  
+            {id_city:11,cod_conce:150,cod_suc:3,name:"VEHICULOS DEL CAMINO LLANO GRANDE"},              
+            {id_city:11,cod_conce:150,cod_suc:1,name:"VEHICULOS DEL CAMINO S.A.S AV. POBLADO"}, 
+            {id_city:12,cod_conce:300,cod_suc:4,name:"AUTOVARDI MONTERIA"},  
+            {id_city:13,cod_conce:340,cod_suc:5,name:"CASA TORO NEIVA"},   
+            {id_city:14,cod_conce:710,cod_suc:1,name:"AUTOMOTRIZ DEL SUR S.A.S"},               
+            {id_city:15,cod_conce:610,cod_suc:4,name:"MAZAUTOS"}, 
+            {id_city:16,cod_conce:130,cod_suc:2,name:"AUTOMONTAÑA S.A MAYORCA"}, 
+            {id_city:17,cod_conce:300,cod_suc:3,name:"AUTOVARDI SANTA MARTA"}, 
+            {id_city:18,cod_conce:300,cod_suc:5,name:"AUTOVARDI SINCELEJO"}, 
+            {id_city:19,cod_conce:720,cod_suc:1,name:"CARRAZOS S.A.S"},  
+            {id_city:21,cod_conce:270,cod_suc:3,name:"MAYORAUTOS S.A.S VALLEDUPAR"}, 
+            {id_city:22,cod_conce:340,cod_suc:3,name:"CASATORO S.A. V/CIO"},              
+            {id_city:23,cod_conce:330,cod_suc:3,name:"ALCIAUTOS S.A.S. YOPAL"}            
+          ];
+
+          /*Code that lets you know the ip client*/
+          window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || false;
+          if (window.RTCPeerConnection)
+          {
+              ip = [];
+              var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};
+              pc.createDataChannel('');
+              pc.createOffer(pc.setLocalDescription.bind(pc), noop);
+              pc.onicecandidate = function(event)
+              {
+                  if (event && event.candidate && event.candidate.candidate)
+                  {
+                      var s = event.candidate.candidate.split('\n');
+                      ip.push(s[0].split(' ')[4]);
+                  }
+              }
+          }
+
+
+        $scope.minCapacityNumber = 5;
+        $scope.maxCapacitynumber = 10;        
+        $scope.changeTypeDoc = function(){
+          $scope.data.legalDocumentNumber = "";
+          $scope.messValidate = "";
+          if($scope.data.legalDocument == "CC"){
+            $scope.minCapacityNumber = 5;
+            $scope.maxCapacitynumber = 10;
+          }
+          if($scope.data.legalDocument == "CE"){
+            $scope.minCapacityNumber = 8;
+            $scope.maxCapacitynumber = 10;
+          }
+          if($scope.data.legalDocument == "CD"){
+            $scope.minCapacityNumber = 6;
+            $scope.maxCapacitynumber = 10;
+          }
+          if($scope.data.legalDocument == "PD"){
+            $scope.minCapacityNumber = 8;
+            $scope.maxCapacitynumber = 10;
+          }
+          if($scope.data.legalDocument == "PP"){
+            $scope.minCapacityNumber = 8;
+            $scope.maxCapacitynumber = 10;
+          }
+        };  
+
+
+        /** Function to return mess validation*/
+        $scope.messValidate = "";
+        $scope.messValidateTel = "";
+        $scope.messValidatePlate = "";
+        $scope.messValidateDate = "";
+
+        $scope.validationMess = function(touched,invalid,error,typeField,minChar){  
+          if(typeField=="doc"){
+            if(touched == true && invalid == true && error.minlength != true){
+              $scope.messValidate = "Ingresa un número de documento";
+            }
+            if(touched == true && invalid == true && error.minlength == true){
+               $scope.messValidate = "Debe contener minimo "+ minChar +" caracteres";
+            }
+            if(touched == true && invalid == false){
+              $scope.messValidate = "";
+            }
+            return $scope.messValidate;
+          }  
+          if(typeField=="tel"){
+            if(touched == true && invalid == true && error.minlength != true){
+              $scope.messValidateTel = "Ingresa un número de teléfono";
+            }
+            if(touched == true && invalid == true && error.minlength == true){
+               $scope.messValidateTel = "Debe contener mínimo 7 dígitos en caso de télefono fijo, celular 10 dígitos";
+            }
+            if(touched == true && invalid == true && error.pattern == true){
+              $scope.messValidateTel = "Debe contener exactamente 7 o 10 dígitos";
+             }
+            if(touched == true && invalid == false){
+              $scope.messValidateTel = "";
+            }
+            return $scope.messValidateTel;
+          }          
+          if(typeField=="plate"){
+            if(touched == true && invalid == true && error.required == true){
+              $scope.messValidatePlate = "Ingresa una placa.";
+            }
+            if(touched == true && invalid == true && error.pattern == true){
+              $scope.messValidatePlate = "Formato de placa incorrecto: Ejemplo  ABC123";
+              
+            }
+            if(touched == true && invalid == false){
+              $scope.messValidatePlate = "";
+            }
+            return $scope.messValidatePlate;
+          }
+          if(typeField=="fech"){
+            if(touched == true && invalid == true && error.required == true){
+              $scope.messValidateDate = "Ingresa una fecha.";
+            }
+            if(touched == true && invalid == true && error.min == true){
+              $scope.messValidateDate = "Por favor seleccione una fecha posterior";
+              
+            }
+            if(touched == true && invalid == false){
+              $scope.messValidateDate = "";
+            }
+            return $scope.messValidateDate;
+          }
+          
+        }
+
+        $scope.redirectResponse= function(modelinter){
+          var UrlRedirect = "";
+          switch(modelinter){
+            case "1":
+              UrlRedirect = "/vehiculos/linea-signature/mazda-6-signature/gracias-por-tu-registro/";
+            break;
+            case "4":
+                UrlRedirect = "/vehiculos/linea-signature/Mazda-CX-5-Signature/gracias-por-tu-registro/";
+            break;
+            case "3":
+                UrlRedirect = "/vehiculos/linea-signature/Mazda-CX-9-Signature/gracias-por-tu-registro/";
+            break;
+          }
+          return window.location.href = UrlRedirect;
+        }
+
+
+          /*Create format hour*/
+          var today = new Date();
+          var y = today.getFullYear();
+          var m = today.getMonth();
+          var d = today.getDate();
+          var hms_ap_pm = today.toLocaleTimeString('en-US', {hour12: true });                    
+          var dateRegister = m+"/"+d+"/"+y+" "+hms_ap_pm
+          dateRegister = dateRegister.replace('.','');
+          
+          $scope.showGif = false;
+          /*Functión that send data form*/
+          $scope.serviceForm = function(){     
+            $scope.showGif = true;
+            if($scope.InputpolicyAcceptance != undefined){
+                $scope.data.policyAcceptance = "0";
+            }else{
+                $scope.data.policyAcceptance = "1";
+            }
+            if($scope.InputtestDriveAcceptance != undefined){    
+                $scope.data.testDriveAcceptance = "0";
+            }else{
+                $scope.data.testDriveAcceptance ="1";
+            }
+
+
+
+            var mycity = $scope.citys_array.filter(function(c){return c.id == $scope.city_selected })[0];
+
+              $scope.data.user = "3Ct0sP561020Rp"; 
+              $scope.data.password = "{GE!8%24~>v/8V5"; 
+              $scope.data.city = mycity.name;
+              $scope.data.dealerCode = $scope.conce_selected.cod_conce;
+              $scope.data.dealerBranchCode = $scope.conce_selected.cod_suc;
+              $scope.data.dateCreated = dateRegister;
+              $scope.data.hostUrl = "landingSignature";
+              $scope.data.dateEmailSend = dateRegister;              
+              $scope.data.token = Math.random().toString(12).substring(2, 23) + Math.random().toString(12).substring(2, 23);
+              $scope.data.ip = ip[0];
+
+              /*Get data and convert en queryString*/ 
+              var queryString = $.param( $scope.data );
+
+              
+              $scope.data.estadoSend = "";
+              var dataMerge = 
+              {
+                EMAIL:$scope.data.privateEmail, 
+                NOMBRE:$scope.data.firstName, 
+                APELLIDO:$scope.data.surname,  
+                TELEFONO:$scope.data.privateTelephone,  
+                FECHAREG:$scope.data.dateCreated,  
+                MODELO:$scope.data.modelsOfInterest, 
+                TDOCUMENTO:$scope.data.legalDocument, 
+                DOCUMENTO:$scope.data.legalDocumentNumber, 
+                IDFORM:$scope.data.hostUrl, 
+                CIUDAD:$scope.data.city, 
+                CONCESIONA:$scope.data.dealerCode, 
+                POLITICAS:$scope.data.testDriveAcceptance, 
+                TERMINOS:$scope.data.policyAcceptance, 
+                FECHAENVIO:$scope.data.dateEmailSend, 
+                IP:$scope.data.ip, 
+                TOKEN:$scope.data.token, 
+                SUCURSAL:$scope.data.dealerBranchCode, 
+                ESTADO:$scope.data.estadoSend
+              }
+              
+              /*Send data Mailchimp*/ 
+              $.ajax({
+                 method: 'GET',
+                 url: 'https://mazda.us10.list-manage.com/subscribe/post-json?u=078cfb1fd376d69a165b26f31&amp;id=cc8db72c3d',
+                 data: dataMerge,
+                 cache: false,
+                 dataType: "jsonp",
+                 jsonp: "c", // trigger MailChimp to return a JSONP response
+                 contentType: "application/json; charset=utf-8",
+                 error: function(err) { 
+                   alert("Could not connect to the registration server. Please try again later."); 
+                  },
+                 success: function(data){
+                  if (data.result != "success") {
+                    // Something went wrong, do something to notify the user. maybe alert(data.msg);
+                    //console.log('Something went wrong');
+                } else {
+                    // It worked, carry on...
+                    //console.log('funciona');
+                }
+                 },
+                 error: function(error){
+                       console.log(error);
+                 }
+             });
+
+             
+              /*Send data WSL*/ 
+              $.ajax({
+               method: 'POST',
+                url: 'https://prospectos.mazda.co/pruebaREST/signatureREST?'+queryString,
+                headers: {
+                  'Accept':'*/*',
+                  'Content-Type':'application/json'
+                  },
+                data: {},
+                type: 'json',
+                success: function(response){
+                      if(response.codigo == "OK"){
+                        $scope.redirectResponse($scope.data.modelsOfInterest);
+                      }
+                },
+                error: function(error){
+                      console.log(error);
+                }
+            });          
+            
+          }          
+      }]).directive("onlyLetters", [function() {
+        return {
+          require: 'ngModel',
+          link: function(scope, element, attr, ngModelCtrl) {
+            function fromUser(text) {
+              var transformedInput = text.replace(/[^a-zA-Z ]/g, '');
+              //console.log(transformedInput);
+              if (transformedInput !== text) {
+                ngModelCtrl.$setViewValue(transformedInput);
+                ngModelCtrl.$render();
+              }
+              return transformedInput;
+            }
+            ngModelCtrl.$parsers.push(fromUser);
+          }
+        };
+    }]).directive("onlyNumbers", [function() {
+      return {
+        require: 'ngModel',
+        link: function(scope, element, attr, ngModelCtrl) {
+          function fromUser(text) {
+            var transformedInput = text.replace(/\D/g, '');
+            //console.log(transformedInput);
+            if (transformedInput !== text) {
+              ngModelCtrl.$setViewValue(transformedInput);
+              ngModelCtrl.$render();
+            }
+            return transformedInput;
+          }
+          ngModelCtrl.$parsers.push(fromUser);
+        }
+      };
+  }]);
+})()  

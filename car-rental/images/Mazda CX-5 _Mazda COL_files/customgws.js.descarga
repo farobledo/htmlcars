@@ -1,0 +1,64 @@
+﻿$(document).ready(function() { AddLegacyText(), MobileSuptext(), HiddenTabsPrice(), HiddenSearch(!0), ChangeStyleForCtaButtonOnVehiclesNav(!0), ChangeStyleForMazdaStoreLink(), AddDownloadAttribute(), ChangeStyleForMazdaStoreSecondMenu() }), $(window).bind("resize", function(n) { AddLegacyText(), MobileSuptext(), HiddenTabsPrice(), HiddenSearch(!0), ChangeStyleForCtaButtonOnVehiclesNav(!0), ChangeStyleForMazdaStoreLink(), AddDownloadAttribute(), ChangeStyleForMazdaStoreSecondMenu() });
+var legacy = '<small id="legacy" style="display:flex; padding:5px; background:white;" class="legacy">*Los precios anunciados son precios sugeridos por Mazda de Colombia S.A.S. No obstante estos precios pueden estar sujetos a variaciones según el Concesionario escogido, el modelo, especificaciones y el plan comercial vigente aplicable a cada vehículo. Para mayor información, consulta directamente con tu concesionario de la Red Mazda.</small>',
+    sup = ".mxp-main-car-item-price-34256 sup",
+    line = "linea signature",
+    substring = "próximamente";
+
+function AddDownloadAttribute() { $("a[data-download-title]").each(function(n) { $(this).attr("download", $(this).data("download-title")) }) }
+
+function AddLegacyText() {
+    setTimeout(function() {
+        $(".mxp-main-navigation-bar-link-3uM8X").each(function(n) {
+            $(this).on("click", function() {
+                var n = $(".mxp-main-motion-container-3nh2M");
+                n.hasClass("mxp-main-hidden-3J8XQ") && n.length && setTimeout(function() { HiddenLastItemMenu(), $(".legacy").remove(), $(".mxp-main-cars-list-1yid2 .mxp-main-cars-list__container-1FulO").append(legacy), $(sup).html("*"), FilterSupText() }, 50)
+            })
+        })
+    }, 50)
+}
+
+function FilterSupText() { $(".list--item-left.mxp-main-radio--item-left-2vYvC").each(function(n) { $(this).on("click", function() { setTimeout(function() { HiddenLastItemMenu(), $(sup).html("*"), ChangeTextFromCar() }, 50) }) }) }
+
+function MobileSuptext() { setTimeout(function() { $(".mxp-main-hamburger-menu-2Y5Db").click(function() { setTimeout(function() { $(".mxp-main-list-links--item-aJTOx").each(function(n) { $(this).on("click", function() { setTimeout(function() { HiddenLastItemMenu(), $(".legacy").remove(), $(sup).html("*"), $(".mxp-main-cars-list__container-1FulO .row.row--gutters").append(legacy), ChangeTextFromCar() }, 50) }) }) }, 50) }) }, 50) }
+
+function HiddenSearch(n) { 1 == n && setTimeout(function() { $(".mxp-main-navigation-bar-link-3uM8X div a").last().css("padding-right", "0"), $(".mxp-main-search-item-1P3eN").css("display", "none"), $(".mxp-main-search-button-ZS1Pc").css("display", "none") }, 50) }
+
+function ChangeStyleForCtaButtonOnVehiclesNav(n) { 1 == n && setTimeout(function() { $('span.mxp-main-headingLink-BmoKz:contains("Separar")').closest("div.mxp-main-navigation-link-11u9y.mxp-main-section-navigation-36WPg").removeClass("mxp-main-section-navigation-36WPg").addClass("buttons mxp-commerce-btn-wrapper mxp-commerce-btn-type-primary mxp-commerce-btn-theme-dark"), $('span.mxp-main-headingLink-BmoKz:contains("Mazda Store")').closest("div.mxp-main-navigation-link-11u9y.mxp-main-section-navigation-36WPg").removeClass("mxp-main-section-navigation-36WPg").addClass("buttons mxp-commerce-btn-wrapper mxp-commerce-btn-type-primary mxp-commerce-btn-theme-dark") }, 50) }
+
+function ChangeStyleForMazdaStoreLink() { setTimeout(function() { $('span.mxp-main-headingLink-BmoKz:contains("Mazda Store")').closest("div.mxp-main-navigation-link-11u9y.mxp-main-site-navigation-3gpyf").addClass("mxp-main-navigation-link-11u9y buttons mxp-commerce-btn-wrapper mxp-commerce-btn-type-primary mxp-commerce-btn-theme-inline") }, 50) }
+
+function HiddenTabsPrice() { $(".mxp-main-tabs-3JV1W .mxp-main-tab-panel-2gDDj").remove() }
+
+function HiddenLastItemMenu() {
+    var n = $(".mxp-main-car-item-info-2y02Z div h4").last().text();
+    line === n && (console.log("entro"), $(".mxp-main-cars-list__container-1FulO .row--gutters .col-lrg-4").last().css("display", "none"))
+}
+
+function ChangeTextFromCar() { $(".mxp-main-car-item-info-2y02Z").each(function(n) { $(this).text().includes(substring) && $(this).html("<div><h4>" + substring + "</h4></div>") }) }
+
+// function LoadVideoBlockHeader() {
+//     var videoClass = document.getElementsByClassName('mxp-video-video-hero-player-2gGZf')[0];
+//     // videoClass.setAttribute("playsinline", "");
+//     // videoClass.setAttribute("muted", "");
+//     videoClass.setAttribute("controls", "");
+//     setTimeout(
+//         function() {
+//             document.getElementsByClassName('mxp-video-video-hero-player-2gGZf')[0].play();
+//         },
+//         50);
+// }
+
+function ChangeStyleForMazdaStoreSecondMenu() {
+    setTimeout(function() {
+        var foo = document.getElementsByClassName('mxp-main-tools-navigation-31Bip');
+        for (var i = 0; i < foo.length; i++) {
+            var tag_a = foo[i].getElementsByTagName('div');
+            for (y = 0; y < tag_a.length; y++) {
+                var span = tag_a[y].firstChild;
+                if (span.textContent == "Mazda Store") {
+                    span.className = "mxp-main-navigation-link-11u9y buttons mxp-commerce-btn-wrapper-main-menu mxp-commerce-btn-type-primary-main-menu mxp-commerce-btn-theme-inline-main-menu";
+                }
+            }
+        }
+    }, 50)
+}

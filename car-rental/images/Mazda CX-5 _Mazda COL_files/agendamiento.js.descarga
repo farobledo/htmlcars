@@ -1,0 +1,591 @@
+var ipScript = "18.214.74.16";
+var flagDateField = false;
+getIP = function() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    //script.src = "https://ipinfo.io/?callback=DisplayIP";
+    script.src = "https://api.ipify.org?format=jsonp&callback=DisplayIP"
+    try {
+        document.getElementsByTagName("head")[0].appendChild(script);
+    } catch (err) {
+        console.log(err);
+    }
+};
+getIP();
+
+function DisplayIP(response) {
+    ipScript = response.ip;
+}
+
+
+
+
+
+
+
+
+function validateFormDate() {
+    var fieldDate = document.getElementById('dateServiceReg');
+    var buttonSub = document.getElementById('SendData');
+    var fieldDateValue = fieldDate.value;
+    var fieldDateParent = fieldDate.parentElement.getElementsByTagName('label');
+    var fieldDateError = document.getElementById('messageDateError');
+
+    if (fieldDateValue == "") {
+        fieldDateParent.item(0).classList.add('error');
+        buttonSub.classList.add("disabled");
+        fieldDateError.innerHTML = "ingresa una fecha.";
+        flagDateField = false;
+    } else {
+        fieldDateParent.item(0).classList.remove('error');
+        buttonSub.classList.remove("disabled");
+        fieldDateError.innerHTML = "";
+        flagDateField = true;
+    }
+}
+
+
+(function() {
+
+    var days_disabled = ["2020-12-26", "2021-01-02"]
+
+    $.datepicker.regional['es'] = {
+        closeText: 'Cerrar',
+        prevText: '< Ant',
+        nextText: 'Sig >',
+        currentText: 'Hoy',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+        dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+        weekHeader: 'Sm',
+        dateFormat: 'm/d/yy',
+        minDate: '+2d',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        beforeShowDay: function(date) {
+            var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+            return [days_disabled.indexOf(string) == -1]
+        }
+    };
+    $.datepicker.setDefaults($.datepicker.regional['es']);
+    setTimeout(function() {
+        $("#dateServiceReg").datepicker({
+            onSelect: function() {
+                validateFormDate();
+            },
+            onClose: function() {
+                validateFormDate();
+            }
+        });
+    }, 1000);
+
+    if (window.location.search != "") {
+        var paramsURL = window.location.search.split('?')[1];
+        var arrayParamas = paramsURL.split('&');
+        if (arrayParamas.length > 1) {
+            var con = arrayParamas[0].split('=')[1];
+            var sec = arrayParamas[1].split('=')[1];
+        }
+        if (arrayParamas.length >= 1) {
+            var agp = arrayParamas[0].split('=')[0];
+            var agp_value = arrayParamas[0].split('=')[1];
+        }
+    }
+
+
+
+    angular.module("appAgendamiento", [])
+        .controller('AgendamientoController', ['$scope', '$http', '$compile', function($scope, $http, $compile) {
+            $scope.pattern_email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            $scope.pattern_plate = /^[a-zA-Z]{1,3}[0-9]{1,3}$/;
+            $scope.pattern_phone = /^([0-9]{7})$|(^[0-9]{10})$/;
+            $scope.UtmFuente = "";
+            $scope.UtmMedio = "";
+            $scope.UtmCampana = "";
+
+            $scope.dataAgen = {
+                service: ""
+            };
+
+            if (window.location.search != "") {
+
+                var paramsURL = window.location.search.split('?')[1];
+                var arrayParamas = paramsURL.split('&');
+                if (!arrayParamas[0].split('=')[0] == "servicio_domicilio") {
+                    if (arrayParamas.length >= 1) {
+                        var val1 = arrayParamas[0].split('=')[0];
+                        var val2 = arrayParamas[1].split('=')[0];
+                        var val3 = arrayParamas[2].split('=')[0];
+                        if (val1 == "utm_source" && val2 == "utm_medium" && val3 == "utm_campaign") {
+                            $scope.UtmFuente = arrayParamas[0].split('=')[1];
+                            $scope.UtmMedio = arrayParamas[1].split('=')[1];
+                            $scope.UtmCampana = arrayParamas[2].split('=')[1];
+                        } else {
+                            var sec = arrayParamas[0].split('=')[0];
+                            var con = arrayParamas[0].split('=')[1];
+                        }
+                    }
+                }
+
+            }
+
+            /*Format date min*/
+
+            /*Create format hour*/
+            var todayDate = new Date();
+
+            todayDate.setDate(todayDate.getDate() + 2);
+            var ym = todayDate.getFullYear();
+            var mm = ('0' + (todayDate.getMonth() + 1)).slice(-2);
+            var dm = ('0' + (todayDate.getDate())).slice(-2);
+
+
+            $scope.minDate = ym + "-" + mm + "-" + dm
+
+            $scope.citys_array = [
+                { id: 1, name: 'Armenia', serv_dom: 0 },
+                { id: 2, name: 'Barrancabermeja', serv_dom: 0 },
+                { id: 3, name: 'Barranquilla', serv_dom: 0 },
+                { id: 4, name: 'Bogotá D.C', serv_dom: 0 },
+                { id: 5, name: 'Bucaramanga', serv_dom: 0 },
+                { id: 6, name: 'Cali', serv_dom: 0 },
+                { id: 7, name: 'Cartagena', serv_dom: 0 },
+                { id: 8, name: 'Chía', serv_dom: 0 },
+                { id: 9, name: 'Cúcuta', serv_dom: 0 },
+                { id: 10, name: 'Ibagué', serv_dom: 0 },
+                { id: 12, name: 'Manizales', serv_dom: 0 },
+                { id: 13, name: 'Medellín', serv_dom: 0 },
+                { id: 14, name: 'Montería', serv_dom: 0 },
+                { id: 15, name: 'Neiva', serv_dom: 0 },
+                { id: 16, name: 'Pasto', serv_dom: 0 },
+                { id: 17, name: 'Pereira', serv_dom: 0 },
+                { id: 26, name: 'Popayán', serv_dom: 0 },
+                { id: 19, name: 'Santa Marta', serv_dom: 0 },
+                { id: 20, name: 'Sincelejo', serv_dom: 0 },
+                { id: 21, name: 'Tunja', serv_dom: 0 },
+                { id: 22, name: 'Valledupar', serv_dom: 0 },
+                { id: 23, name: 'Villavicencio', serv_dom: 0 },
+                { id: 24, name: 'Yopal', serv_dom: 1 }
+
+            ];
+
+            $scope.concecionarios_random = [];
+            $scope.concecionarios = [
+                //Armenia
+                { id_city: 1, cod_conce: 420, cod_suc: 2, name: "Colautos (Centro Comercial Calima)" },
+                //Barrancabermeja 
+                { id_city: 2, cod_conce: 270, cod_suc: 4, name: "Mayorautos (Km 1 Vía Bucaramanga - El Retén)" },
+                //Barranquilla
+                { id_city: 3, cod_conce: 540, cod_suc: 1, name: "Janna Motors (Calle 76 con 54)" },
+                { id_city: 3, cod_conce: 540, cod_suc: 2, name: "Janna Motors (Vía 40 con 69)" },
+                //Bogotá
+                { id_city: 4, cod_conce: 330, cod_suc: 1, name: "Alciautos (Autopista Norte Calle 134)" },
+                { id_city: 4, cod_conce: 330, cod_suc: 4, name: "Alciautos (Calle 13 con 68 A)" },
+                { id_city: 4, cod_conce: 340, cod_suc: 2, name: "CasaToro (Carrera 30 con 22B)" },
+                { id_city: 4, cod_conce: 340, cod_suc: 4, name: "CasaToro (Carrera 7 con 155)" },
+                { id_city: 4, cod_conce: 340, cod_suc: 7, name: "Casatoro (Calle 170 con av. Boyacá)" },
+                // { id_city: 4, cod_conce: 340, cod_suc: 8, name: "CasaToro (Carrera 50 con 15)" },
+                { id_city: 4, cod_conce: 350, cod_suc: 1, name: "Madiautos (Av. Carrera 70 con 96 - Morato)" },
+                { id_city: 4, cod_conce: 360, cod_suc: 3, name: "Motovalle (Autopista Norte Calle 170)" },
+                { id_city: 4, cod_conce: 385, cod_suc: 1, name: "Jorge Cortés (Av. Suba con 97 A)" },
+                { id_city: 4, cod_conce: 375, cod_suc: 1, name: "Kyoto Motors (Carrera 68 A con 20 - Salitre Plaza)" },
+                // { id_city: 4, cod_conce: 390, cod_suc: 1, name: "Mazco (Calle 98 A con 58)" },
+                //bucaramanga
+                { id_city: 5, cod_conce: 270, cod_suc: 1, name: "Mayorautos (Carrera 26 con 40)" },
+                //Cali
+                { id_city: 6, cod_conce: 620, cod_suc: 2, name: "Mazko (Avenida 3 N con 34)" },
+                { id_city: 6, cod_conce: 620, cod_suc: 1, name: "Mazko (Carrera 100 con 12)" },
+                { id_city: 6, cod_conce: 620, cod_suc: 4, name: "Mazko (Carrera 5 con 67)" },
+                //Cartagena
+                { id_city: 7, cod_conce: 300, cod_suc: 2, name: "Cartagena (Av. Pedro de Heredia Calle 30 con 37)" },
+                //Chia
+                { id_city: 8, cod_conce: 300, cod_suc: 1, name: "Vardí (km 2.5 variante Chía-Cajicá) " },
+                //Cucuta
+                { id_city: 9, cod_conce: 270, cod_suc: 2, name: "Mayorautos (Autopista Internacional Vía San Antonio Km 3 con 25N)" },
+                // //Ibague
+                { id_city: 10, cod_conce: 340, cod_suc: 6, name: "CasaToro (Carrera 48 S con 116)" },
+                //Manizales
+                { id_city: 12, cod_conce: 420, cod_suc: 1, name: "CasaToro (Carrera 23 con 36) " },
+                //Medellín
+                { id_city: 13, cod_conce: 130, cod_suc: 1, name: "Automontaña (Calle 29 con 43 A)" },
+                { id_city: 13, cod_conce: 130, cod_suc: 2, name: "Automontaña (Centro Comercial Mayorca)" },
+                { id_city: 13, cod_conce: 140, cod_suc: 1, name: "Somerauto (Carrera 48 con 14)" },
+                { id_city: 13, cod_conce: 150, cod_suc: 3, name: "Vehículos del Camino (Km 3 Vía Llanogrande)" },
+                { id_city: 13, cod_conce: 150, cod_suc: 1, name: "Vehículos del Camino (Av. El Poblado Carrera 43 B con 17)" },
+                //Monteria
+                { id_city: 14, cod_conce: 300, cod_suc: 4, name: "Vardí (Calle 77 con 5)" },
+                //Neiva
+                { id_city: 15, cod_conce: 340, cod_suc: 5, name: "CasaToro (Carrera 5 con 26 S)" },
+                //Pasto
+                { id_city: 16, cod_conce: 710, cod_suc: 1, name: "Automotriz del Sur (Av. Panamericana Calle 2 con 26)" },
+                //Pereira
+                { id_city: 17, cod_conce: 420, cod_suc: 4, name: "Colautos (Avenida 30 de Agosto con 41)" },
+                //
+                { id_city: 25, cod_conce: 610, cod_suc: 1, name: "Mazautos " },
+                //Popayan
+                { id_city: 26, cod_conce: 300, cod_suc: 6, name: "Vardí (Carrera 9 con 17 N)" },
+                //Santa Marta
+                { id_city: 19, cod_conce: 300, cod_suc: 3, name: "Vardí (Carrera 3 con 24)" },
+                //Sincelejo
+                { id_city: 20, cod_conce: 300, cod_suc: 5, name: "Vardí (Transversal 28 con 27 A)" },
+                //Tunja
+                { id_city: 21, cod_conce: 720, cod_suc: 1, name: "Carrazos (Calle 53 con 5) " },
+                //Valledupar
+                { id_city: 22, cod_conce: 270, cod_suc: 3, name: "Mayorautos (Carrera 7 A con 20 D)" },
+                //Villavicencio
+                { id_city: 23, cod_conce: 340, cod_suc: 3, name: "CasaToro (Anillo Vial Vía Acacías Km 1)" },
+                //Yopal
+                { id_city: 24, cod_conce: 330, cod_suc: 3, name: "Alciautos (Carrera 19 con 21)" }
+            ];
+
+            var url_coming = location.search;
+            var url_parts = url_coming.split('&');
+            var value_service;
+            var type_value;
+            if (url_parts) {
+                //split the value of word.
+                var service_parts = url_parts[0].split('=');
+                //in posotion 0 get the word to evaluate
+                type_value = service_parts[0].replace('?', '');
+                value_service = service_parts[1];
+                if (type_value == 'servicio_domicilio') {
+                    if (value_service == 1) {
+                        $scope.dataAgen.service = "Servicio Mazda en Casa";
+                        $scope.citys_array = $scope.citys_array.filter(
+                            function(c) {
+                                return c.serv_dom == 0;
+                            });
+                    }
+                }
+                if (type_value == 'profesional_salud') {
+                    if (value_service == 1) {
+                        $scope.dataAgen.service = "Profesionales de la salud";
+                    }
+                }
+
+            }
+
+            //function to run when user select option "Servicio Mazda en Casa"
+            $scope.filterCitys = function(option_select) {
+                $scope.citys_array = [
+                    { id: 1, name: 'Armenia', serv_dom: 0 },
+                    { id: 2, name: 'Barrancabermeja', serv_dom: 0 },
+                    { id: 3, name: 'Barranquilla', serv_dom: 0 },
+                    { id: 4, name: 'Bogotá D.C', serv_dom: 0 },
+                    { id: 5, name: 'Bucaramanga', serv_dom: 0 },
+                    { id: 6, name: 'Cali', serv_dom: 0 },
+                    { id: 7, name: 'Cartagena', serv_dom: 0 },
+                    { id: 8, name: 'Chía', serv_dom: 0 },
+                    { id: 9, name: 'Cúcuta', serv_dom: 0 },
+                    { id: 10, name: 'Ibagué', serv_dom: 0 },
+                    { id: 12, name: 'Manizales', serv_dom: 0 },
+                    { id: 13, name: 'Medellín', serv_dom: 0 },
+                    { id: 14, name: 'Montería', serv_dom: 0 },
+                    { id: 15, name: 'Neiva', serv_dom: 0 },
+                    { id: 16, name: 'Pasto', serv_dom: 0 },
+                    { id: 17, name: 'Pereira', serv_dom: 0 },
+                    { id: 26, name: 'Popayán', serv_dom: 0 },
+                    { id: 19, name: 'Santa Marta', serv_dom: 0 },
+                    { id: 20, name: 'Sincelejo', serv_dom: 0 },
+                    { id: 21, name: 'Tunja', serv_dom: 0 },
+                    { id: 22, name: 'Valledupar', serv_dom: 0 },
+                    { id: 23, name: 'Villavicencio', serv_dom: 0 },
+                    { id: 24, name: 'Yopal', serv_dom: 1 }
+                ];
+                if (option_select == "Servicio Mazda en Casa") {
+                    $scope.citys_array = $scope.citys_array.filter(
+                        function(c) {
+                            return c.serv_dom == 0;
+                        });
+                } else {
+                    return $scope.citys_array;
+                }
+            };
+
+            var conce_return = null;
+
+            if (sec && con) {
+                conce_return = $scope.concecionarios.filter(function(c) {
+                    return c.cod_suc == sec && c.cod_conce == con;
+                });
+                if (conce_return.length != 0) {
+                    $scope.city_selected = conce_return[0].id_city ? conce_return[0].id_city : undefined;
+                    $scope.conce_selected = conce_return[0] ? conce_return[0] : {};
+                }
+            }
+
+            if (agp == "servicio" && (agp_value == "agp" || agp_value == "AGP")) {
+                $scope.dataAgen.service = "Mantenimiento programado";
+            }
+
+            $scope.minCapacityNumber = 5;
+            $scope.maxCapacitynumber = 10;
+            $scope.changeTypeDoc = function() {
+                $scope.dataAgen.legalDocumentNumber = "";
+                if ($scope.dataAgen.legalDocument == "CE") {
+                    $scope.minCapacityNumber = 5;
+                    $scope.maxCapacitynumber = 10;
+                }
+                if ($scope.dataAgen.legalDocument == "CD") {
+                    $scope.minCapacityNumber = 6;
+                    $scope.maxCapacitynumber = 10;
+                }
+                if ($scope.dataAgen.legalDocument == "PD") {
+                    $scope.minCapacityNumber = 8;
+                    $scope.maxCapacitynumber = 10;
+                }
+                if ($scope.dataAgen.legalDocument == "PP") {
+                    $scope.minCapacityNumber = 8;
+                    $scope.maxCapacitynumber = 10;
+                }
+            };
+
+
+            $scope.randomList = function(list) {
+                return list.sort(function() {
+                    return 0.5 - Math.random();
+                });
+            }
+            $scope.setConce = function() {
+                $scope.concecionarios_random = $scope.randomList($scope.concecionarios);
+            }
+            $scope.setConce();
+
+            /** Function to return mess validation*/
+            $scope.messValidate = "";
+            $scope.messValidateTel = "";
+            $scope.messValidatePlate = "";
+            $scope.messValidateDate = "";
+
+            $scope.validationMess = function(touched, invalid, error, typeField, minChar) {
+                if (typeField == "doc") {
+                    if (touched == true && invalid == true && error.minlength != true) {
+                        $scope.messValidate = "Ingresa un número de documento";
+                    }
+                    if (touched == true && invalid == true && error.minlength == true) {
+                        $scope.messValidate = "Debe contener minimo " + minChar + " caracteres";
+                    }
+                    if (touched == true && invalid == false) {
+                        $scope.messValidate = "";
+                    }
+                    return $scope.messValidate;
+                }
+                if (typeField == "tel") {
+                    if (touched == true && invalid == true && error.minlength != true) {
+                        $scope.messValidateTel = "Ingresa un número de teléfono";
+                    }
+                    if (touched == true && invalid == true && error.minlength == true) {
+                        $scope.messValidateTel = "Debe contener mínimo 7 dígitos en caso de télefono fijo, celular 10 dígitos";
+                    }
+                    if (touched == true && invalid == true && error.pattern == true) {
+                        $scope.messValidateTel = "Debe contener exactamente 7 o 10 dígitos";
+                    }
+                    if (touched == true && invalid == false) {
+                        $scope.messValidateTel = "";
+                    }
+                    return $scope.messValidateTel;
+                }
+                if (typeField == "plate") {
+                    if (touched == true && invalid == true && error.required == true) {
+                        $scope.messValidatePlate = "Ingresa una placa.";
+                    }
+                    if (touched == true && invalid == true && error.pattern == true) {
+                        $scope.messValidatePlate = "Formato de placa incorrecto: Ejemplo  ABC123";
+
+                    }
+                    if (touched == true && invalid == false) {
+                        $scope.messValidatePlate = "";
+                    }
+                    return $scope.messValidatePlate;
+                }
+
+            }
+
+
+
+            /*Create format hour*/
+            var today = new Date();
+            var y = today.getFullYear();
+            var m = today.getMonth() + 1;
+            var d = today.getDate();
+            var hms_ap_pm = today.toLocaleTimeString('en-US', { hour12: true });
+            var dateRegister = m + "/" + d + "/" + y + " " + hms_ap_pm;
+
+            dateRegister = dateRegister.replace('.', '');
+            dateRegister = moment(dateRegister).format("M/D/YYYY h:mm:ss A");
+
+            $scope.showGif = false;
+            //Function send data Campanas
+            $scope.serviceFormAgenda = function() {
+
+                $scope.showGif = true;
+                if ($scope.InputpolicyAcceptance != undefined) {
+                    $scope.dataAgen.policyAcceptance = "0";
+                } else {
+                    $scope.dataAgen.policyAcceptance = "1";
+                }
+
+
+
+                $scope.dataAgen.serviceDate = document.getElementById('dateServiceReg').value + " " + $scope.hourField;
+                $scope.dataAgen.serviceDate = $scope.dataAgen.serviceDate.replace('.', '');
+
+                var mycity = $scope.citys_array.filter(function(c) { return c.id == $scope.city_selected })[0];
+
+                /*Get data and convert en queryString*/
+                $scope.dataAgen.dateCreated = dateRegister;
+                $scope.dataAgen.user = "3Ct0sP561020Rp";
+                $scope.dataAgen.password = "{GE!/8V58%24~>v";
+                $scope.dataAgen.hostUrl = "citasTaller";
+                $scope.dataAgen.source = "PÁGINA WEB";
+
+                $scope.dataAgen.dealerCode = $scope.conce_selected.cod_conce;
+                $scope.dataAgen.dealerBranchCode = $scope.conce_selected.cod_suc;
+                $scope.dataAgen.city = mycity.name;
+                $scope.dataAgen.dateEmailSend = dateRegister;
+                $scope.dataAgen.token = Math.random().toString(12).substring(2, 23) + Math.random().toString(12).substring(2, 23);
+                $scope.dataAgen.ip = ipScript;
+                $scope.dataAgen.UtmFuente = $scope.UtmFuente;
+                $scope.dataAgen.UtmMedio = $scope.UtmMedio;
+                $scope.dataAgen.UtmCampana = $scope.UtmCampana;
+
+
+                $scope.dataAgen.estadoSend = "";
+                var dataMerge = {
+                    EMAIL: $scope.dataAgen.privateEmail,
+                    NOMBRE: $scope.dataAgen.firstName,
+                    APELLIDO: $scope.dataAgen.surname,
+                    TELEFONO: $scope.dataAgen.privateTelephone,
+                    FECHAREG: $scope.dataAgen.dateCreated,
+                    MODELO: "",
+                    TDOCUMENTO: $scope.dataAgen.legalDocument,
+                    DOCUMENTO: $scope.dataAgen.legalDocumentNumber,
+                    IDFORM: $scope.dataAgen.hostUrl,
+                    CIUDAD: $scope.dataAgen.city,
+                    CONCESIONA: $scope.dataAgen.dealerCode,
+                    POLITICAS: $scope.dataAgen.testDriveAcceptance,
+                    TERMINOS: $scope.dataAgen.policyAcceptance,
+                    FECHAENVIO: $scope.dataAgen.dateEmailSend,
+                    IP: $scope.dataAgen.ip,
+                    TOKEN: $scope.dataAgen.token,
+                    SUCURSAL: $scope.dataAgen.dealerBranchCode,
+                    ESTADO: $scope.dataAgen.estadoSend
+                }
+
+                /*Send data Mailchimp*/
+                /*$.ajax({
+method: 'GET',
+url: 'https://mazda.us10.list-manage.com/subscribe/post-json?u=078cfb1fd376d69a165b26f31&amp;id=ffb9f6ca53',
+data: dataMerge,
+cache: false,
+dataType: "jsonp",
+jsonp: "c", // trigger MailChimp to return a JSONP response
+contentType: "application/json; charset=utf-8",
+error: function(err) { 
+alert("Could not connect to the registration server. Please try again later."); 
+},
+success: function(data){
+if (data.result != "success") {
+// Something went wrong, do something to notify the user. maybe alert(data.msg);
+//console.log('Something went wrong');
+} else {
+// It worked, carry on...
+//console.log('funciona');
+}
+},
+error: function(error){
+console.log(error);
+}
+});*/
+
+                /*Send data Mailchimp*/
+
+                $.ajax({
+                    method: 'GET',
+                    url: 'https://mazda.us10.list-manage.com/subscribe/post-json?u=078cfb1fd376d69a165b26f31&amp;id=cc8db72c3d',
+                    data: dataMerge,
+                    cache: false,
+                    dataType: "jsonp",
+                    jsonp: "c", // trigger MailChimp to return a JSONP response
+                    contentType: "application/json; charset=utf-8",
+                    error: function(err) {
+                        alert("Could not connect to the registration server. Please try again later.");
+                    },
+                    success: function(data) {
+                        if (data.result != "success") {
+                            // Something went wrong, do something to notify the user. maybe alert(data.msg);
+                            //console.log('Something went wrong');
+                        } else {
+                            // It worked, carry on...
+                            //console.log('funciona');
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+
+                /*Send data WSL*/
+                var queryString = $.param($scope.dataAgen);
+                //console.log(queryString);
+
+                $.ajax({
+                    method: 'POST',
+                    url: 'https://prospectos.mazda.co/citasTallerREST?' + queryString,
+                    cache: false,
+                    headers: {
+                        'Accept': '*/*',
+                        'Content-Type': 'application/json'
+                    },
+                    data: {},
+                    type: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        if (response.codigo == "OK") {
+                            UrlRedirect = "/formularios/solicita-un-servicio/gracias-por-agendar-tu-cita/";
+                            return window.location.href = UrlRedirect;
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }]).directive("onlyLetters", [function() {
+            return {
+                require: 'ngModel',
+                link: function(scope, element, attr, ngModelCtrl) {
+                    function fromUser(text) {
+                        var transformedInput = text.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚ\s]/g, '');
+                        //console.log(transformedInput);
+                        if (transformedInput !== text) {
+                            ngModelCtrl.$setViewValue(transformedInput);
+                            ngModelCtrl.$render();
+                        }
+                        return transformedInput;
+                    }
+                    ngModelCtrl.$parsers.push(fromUser);
+                }
+            };
+        }]).directive("onlyNumbers", [function() {
+            return {
+                require: 'ngModel',
+                link: function(scope, element, attr, ngModelCtrl) {
+                    function fromUser(text) {
+                        var transformedInput = text.replace(/\D/g, '');
+                        //console.log(transformedInput);
+                        if (transformedInput !== text) {
+                            ngModelCtrl.$setViewValue(transformedInput);
+                            ngModelCtrl.$render();
+                        }
+                        return transformedInput;
+                    }
+                    ngModelCtrl.$parsers.push(fromUser);
+                }
+            };
+        }]);
+})()

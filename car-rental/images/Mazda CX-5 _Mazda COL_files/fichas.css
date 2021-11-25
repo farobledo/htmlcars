@@ -1,0 +1,30 @@
+body{
+    background: #ffffff
+}
+
+.ficha{
+    display: flex;
+    flex: 100%;
+    padding: 20px;
+}
+.ficha-2{
+    flex: 40%;
+}
+.ficha-1{
+    text-align: right;
+    flex: 60%;
+}
+@media (max-width: 768px){
+    .ficha{
+        flex-direction: column;
+        padding: 15px;
+    }
+    .ficha-2{
+        padding: 15px 0px;
+    }
+    .ficha-1{
+        text-align: left;
+    }
+    
+
+}

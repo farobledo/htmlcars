@@ -1,0 +1,362 @@
+@font-face {
+    font-family: "MazdaType";
+    font-weight: 400;
+    src: url('./fonts/MazdaType-Regular.woff2') format('woff2'), url('./fonts/MazdaType-Regular.woff') format('woff');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.landing-hibridos {
+    width: 100%;
+    max-width: 1920px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    font-family: "MazdaType";
+    font-weight: 400;
+}
+
+.landing-hibridos img {
+    width: 100%;
+    height: auto;
+}
+
+.landing-hibridos .contain {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 1fr;
+    height: 100vh;
+    position: relative;
+    font-family: 'MazdaType';
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .contain {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(2, 1fr);
+    }
+}
+
+.landing-hibridos .box1 {
+    grid-area: 1 / 1 / 2 / 2;
+    position: relative;
+    height: 100vh;
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .box1 {
+        grid-area: 1 / 1 / 2 / 2;
+    }
+}
+
+@media screen and (max-width: 388px) {
+    .landing-hibridos .box1 {
+        bottom: 10%;
+    }
+}
+
+.landing-hibridos .box1 .descript1 {
+    width: 67%;
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .box1 .descript1 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.landing-hibridos .box1 .descript1 h2 {
+    color: #191919;
+    font-size: 26px;
+    line-height: 1.4em;
+    font-weight: 500;
+    font-family: 'MazdaType';
+    text-transform: uppercase;
+    text-align: left;
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .box1 .descript1 h2 {
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .box1 {
+        text-align: center;
+    }
+}
+
+.landing-hibridos .box1 .descript1 p {
+    color: #191919;
+    font-size: 16px;
+    font-family: 'MazdaType';
+    font-weight: 400;
+    line-height: 26PX;
+    padding: 20px 0px;
+    text-align: justify;
+}
+
+.landing-hibridos .box1 .descript1 a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 20px;
+    background: #000;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'MazdaType';
+    text-transform: uppercase;
+}
+
+.landing-hibridos .box1 .descript1 a:hover {
+    background: #910A2D;
+    color: #191919;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-decoration: none;
+    font-family: 'MazdaType';
+}
+
+.landing-hibridos .box1 .descript2 {
+    width: 67%;
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'MazdaType';
+}
+
+.landing-hibridos .box1 .descript2 h2 {
+    color: #191919;
+    font-size: 26px;
+    line-height: 1.4em;
+    font-weight: 500;
+    font-family: 'MazdaType';
+    text-transform: uppercase;
+}
+
+.landing-hibridos .box1 .descript2 p {
+    color: #191919;
+    font-size: 16px;
+    font-family: 'MazdaType';
+    font-weight: 400;
+    line-height: 26PX;
+    padding: 20px 0px;
+    text-align: justify;
+}
+
+.landing-hibridos .box1 .descript2 a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 20px;
+    background: #000;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'MazdaType';
+    text-transform: uppercase;
+}
+
+.landing-hibridos .box1 .descript2 a:hover {
+    background: #910A2D;
+    color: #191919;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-decoration: none;
+    font-family: 'MazdaType';
+}
+
+.landing-hibridos .box2 {
+    grid-area: 1 / 2 / 2 / 3;
+    position: relative;
+    height: 100vh;
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .box2 {
+        grid-area: 2 / 1 / 3 / 2;
+        height: 0vh;
+    }
+}
+
+.landing-hibridos .contain .box-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    clip-path: circle(533px at right 503px);
+    z-index: -1;
+}
+
+@media screen and (max-width: 1280px) {
+    .landing-hibridos .contain .box-back {
+        clip-path: circle(452px at right 406px);
+    }
+}
+
+@media screen and (max-width: 1033px) {
+    .landing-hibridos .contain .box-back {
+        clip-path: circle(380px at right 363px);
+    }
+}
+
+@media screen and (max-width: 915px) {
+    .landing-hibridos .contain .box-back {
+        clip-path: circle(315px at right 303px);
+    }
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .contain .box-back {
+        top: 80%;
+        width: 100%;
+        clip-path: circle(722px at center 874px);
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .landing-hibridos .contain .box-back {
+        top: 53%;
+        width: 100%;
+        clip-path: circle(722px at center 1000px);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .landing-hibridos .contain .box-back {
+        top: 56%;
+        width: 100%;
+        clip-path: circle(619px at center 874px);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .landing-hibridos .contain .box-back {
+        top: 38%;
+        width: 100%;
+        clip-path: circle(506px at center 874px);
+    }
+}
+
+.landing-hibridos .box2 .image-car {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 44%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .box2 .image-car {
+        top: 10%;
+        left: 49%;
+        width: 80%;
+    }
+}
+
+.landing-hibridos .box2 .image-car2 {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+}
+
+.landing-hibridos .thumb {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 80%;
+    transform: translatex(-50%);
+    display: flex;
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .thumb {
+        top: 145%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .landing-hibridos .thumb {
+        top: 131%;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .landing-hibridos .thumb {
+        top: 128%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .landing-hibridos .thumb {
+        top: 123%;
+    }
+}
+
+.landing-hibridos .thumb li {
+    list-style: none;
+    display: inline-block;
+    margin: 0 20px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.landing-hibridos .thumb li:hover {
+    transform: translatey(-15px);
+}
+
+.landing-hibridos .thumb p {
+    margin-top: 10px;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-family: 'MazdaType';
+}
+
+@media screen and (max-width: 780px) {
+    .landing-hibridos .thumb p {
+        color: #fff;
+        font-size: 11px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .landing-hibridos .thumb p {
+        color: #fff;
+        text-align: center;
+        font-size: 11px;
+    }
+}
+
+.landing-hibridos .thumb li img {
+    max-width: 150px;
+}
+
+.landing-hibridos .box3 img {
+    cursor: pointer;
+}

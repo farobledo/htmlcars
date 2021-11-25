@@ -1,0 +1,347 @@
+! function(e, t) { "object" == typeof exports ? module.exports = t(require("angular")) : "function" == typeof define && define.amd ? define(["angular"], t) : t(e.angular) }(this, function(angular) { return angular.module("ngMap", []),
+        function() { "use strict";
+
+            function e(u, g, d, m, e, t, f, v, y) { w = t; var h = this,
+                    b = e.startSymbol(),
+                    O = e.endSymbol();
+                h.mapOptions, h.mapEvents, h.eventListeners, h.addObject = function(e, t) { var n;
+                    h.map && (h.map[e] = h.map[e] || {}, n = Object.keys(h.map[e]).length, h.map[e][t.id || n] = t, h.map instanceof google.maps.Map && ("infoWindows" != e && t.setMap && t.setMap && t.setMap(h.map), t.centered && t.position && h.map.setCenter(t.position), "markers" == e && h.objectChanged("markers"), "customMarkers" == e && h.objectChanged("customMarkers"))) }, h.deleteObject = function(e, t) { if (t.map) { var n, o = t.map[e]; for (n in o) o[n] === t && (google.maps.event.clearInstanceListeners(t), delete o[n]);
+                        t.map && t.setMap && t.setMap(null), "markers" == e && h.objectChanged("markers"), "customMarkers" == e && h.objectChanged("customMarkers") } }, h.observeAttrSetObj = function(e, t, n) { if (t.noWatcher) return !1; for (var o = w.getAttrsToObserve(e), i = 0; i < o.length; i++) { var r = o[i];
+                        t.$observe(r, f.observeAndSet(r, n)) } }, h.zoomToIncludeMarkers = function() { if (null != h.map.markers && 0 < Object.keys(h.map.markers).length || null != h.map.customMarkers && 0 < Object.keys(h.map.customMarkers).length) { var e, t, n = new google.maps.LatLngBounds; for (e in h.map.markers) n.extend(h.map.markers[e].getPosition()); for (t in h.map.customMarkers) n.extend(h.map.customMarkers[t].getPosition());
+                        h.mapOptions.maximumZoom && (h.enableMaximumZoomCheck = !0), h.map.fitBounds(n) } }, h.objectChanged = function(e) {!h.map || "markers" != e && "customMarkers" != e || "auto" != h.map.zoomToIncludeMarkers || h.zoomToIncludeMarkers() }, h.initializeMap = function() { var t = h.mapOptions,
+                        e = h.mapEvents,
+                        n = h.map; if (h.map = v.getMapInstance(g[0]), f.setStyle(g[0]), n) { var o, i = w.filter(d),
+                            r = w.getOptions(i),
+                            a = w.getControlOptions(i),
+                            t = angular.extend(r, a); for (o in n) { var s = n[o]; if ("object" == typeof s)
+                                for (var p in s) h.addObject(o, s[p]) }
+                        h.map.showInfoWindow = h.showInfoWindow, h.map.hideInfoWindow = h.hideInfoWindow }
+                    t.zoom = t.zoom && !isNaN(t.zoom) ? +t.zoom : 15; var c, i = t.center,
+                        r = new RegExp(y(b) + ".*" + y(O)); for (c in !t.center || "string" == typeof i && i.match(r) ? t.center = new google.maps.LatLng(0, 0) : "string" == typeof i && i.match(/^[0-9.-]*,[0-9.-]*$/) ? (a = parseFloat(i.split(",")[0]), r = parseFloat(i.split(",")[1]), t.center = new google.maps.LatLng(a, r)) : i instanceof google.maps.LatLng || (i = t.center, delete t.center, f.getGeoLocation(i, t.geoLocationOptions).then(function(e) { h.map.setCenter(e), (e = t.geoCallback) && m(e)(u) }, function() { t.geoFallbackCenter && h.map.setCenter(t.geoFallbackCenter) })), h.map.setOptions(t), e) { var l = e[c],
+                            l = google.maps.event.addListener(h.map, c, l);
+                        h.eventListeners[c] = l }
+                    h.observeAttrSetObj(M, d, h.map), h.singleInfoWindow = t.singleInfoWindow, google.maps.event.trigger(h.map, "resize"), google.maps.event.addListenerOnce(h.map, "idle", function() { f.addMap(h), t.zoomToIncludeMarkers && h.zoomToIncludeMarkers(), u.map = h.map, u.$emit("mapInitialized", h.map), d.mapInitialized && m(d.mapInitialized)(u, { map: h.map }) }), t.zoomToIncludeMarkers && t.maximumZoom && google.maps.event.addListener(h.map, "zoom_changed", function() { 1 == h.enableMaximumZoomCheck && (h.enableMaximumZoomCheck = !1, google.maps.event.addListenerOnce(h.map, "bounds_changed", function() { h.map.setZoom(Math.min(t.maximumZoom, h.map.getZoom())) })) }) }, u.google = google; var n, M = w.orgAttributes(g),
+                    o = w.filter(d),
+                    t = w.getOptions(o, { scope: u }),
+                    e = w.getControlOptions(o),
+                    e = angular.extend(t, e),
+                    o = w.getEvents(u, o);
+                Object.keys(o).length, h.mapOptions = e, h.mapEvents = o, h.eventListeners = {}, t.lazyInit ? (n = d.id && 0 === d.id.indexOf(b, 0) && -1 !== d.id.indexOf(O, d.id.length - O.length) ? (n = d.id.slice(2, -2), m(n)(u)) : d.id, h.map = { id: n }, f.addMap(h)) : h.initializeMap(), t.triggerResize && google.maps.event.trigger(h.map, "resize"), g.bind("$destroy", function() { v.returnMapInstance(h.map), f.deleteMap(h) }) } var w;
+            e.$inject = ["$scope", "$element", "$attrs", "$parse", "$interpolate", "Attr2MapOptions", "NgMap", "NgMapPool", "escapeRegexpFilter"], angular.module("ngMap").controller("__MapController", e) }(),
+        function() { "use strict";
+
+            function t(e, t, n, o) { o = o[0] || o[1]; var i = p.orgAttributes(t),
+                    r = p.filter(n),
+                    a = p.getOptions(r, { scope: e }),
+                    r = p.getEvents(e, r),
+                    s = c(a, r);
+                o.addObject("bicyclingLayers", s), o.observeAttrSetObj(i, n, s), t.bind("$destroy", function() { o.deleteObject("bicyclingLayers", s) }) }
+
+            function e(e) { return p = e, { restrict: "E", require: ["?^map", "?^ngMap"], link: t } } var p, c = function(e, t) { var n, o = new google.maps.BicyclingLayer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o };
+            e.$inject = ["Attr2MapOptions"], angular.module("ngMap").directive("bicyclingLayer", e) }(),
+        function() { "use strict";
+
+            function n(e, t, n, o, i) { o = o[0] || o[1]; var r, a = l.filter(n),
+                    n = l.getOptions(a, { scope: e }),
+                    s = l.getEvents(e, a),
+                    p = e.$new(),
+                    c = t[0].parentElement.removeChild(t[0]); for (r in i(p, function(e) { t.empty(), t.append(e), t.on("$destroy", function() { p.$destroy() }) }), s) google.maps.event.addDomListener(c, r, s[r]);
+                o.addObject("customControls", c), n = n.position, o.map.controls[google.maps.ControlPosition[n]].push(c), t.bind("$destroy", function() { o.deleteObject("customControls", c) }) }
+
+            function e(e, t) { return l = e, { restrict: "E", require: ["?^map", "?^ngMap"], link: n, transclude: !0 } } var l;
+            e.$inject = ["Attr2MapOptions", "NgMap"], angular.module("ngMap").directive("customControl", e) }(),
+        function() { "use strict";
+
+            function g(e) { for (var t in e = e || {}, this.el = document.createElement("div"), this.el.style.display = "block", this.el.style.visibility = "hidden", this.visible = !0, e) this[t] = e[t] }
+
+            function e(e, t, n, o, i, r) { d = o, c = e, m = t, f = i; var a = n.startSymbol(),
+                    s = n.endSymbol(),
+                    p = new RegExp(r(a) + "([^" + s.substring(0, 1) + "]+)" + r(s), "g"); return { restrict: "E", require: ["?^map", "?^ngMap"], compile: function(e) {
+                        (g.prototype = new google.maps.OverlayView).setContent = function(e, t) { this.el.innerHTML = e, this.el.style.position = "absolute", this.el.style.top = 0, this.el.style.left = 0, t && m(angular.element(this.el).contents())(t) }, g.prototype.getDraggable = function() { return this.draggable }, g.prototype.setDraggable = function(e) { this.draggable = e }, g.prototype.getPosition = function() { return this.position }, g.prototype.setPosition = function(e) { e && (this.position = e); var n = this;
+                            this.getProjection() && "function" == typeof this.position.lng && (e = function() { var e, t;
+                                n.getProjection() && (t = n.getProjection().fromLatLngToDivPixel(n.position), e = Math.round(t.x - n.el.offsetWidth / 2), t = Math.round(t.y - n.el.offsetHeight - 10), v ? n.el.style[v] = "translate(" + e + "px, " + t + "px)" : (n.el.style.left = e + "px", n.el.style.top = t + "px"), n.el.style.visibility = "visible") }, n.el.offsetWidth && n.el.offsetHeight ? e() : c(e, 300)) }, g.prototype.setZIndex = function(e) { void 0 !== e && (this.zIndex !== e && (this.zIndex = e), this.el.style.zIndex !== this.zIndex && (this.el.style.zIndex = this.zIndex)) }, g.prototype.getVisible = function() { return this.visible }, g.prototype.setVisible = function(e) { "none" === this.el.style.display && e ? this.el.style.display = "block" : "none" === this.el.style.display || e || (this.el.style.display = "none"), this.visible = e }, g.prototype.addClass = function(e) { var t = this.el.className.trim().split(" "); - 1 == t.indexOf(e) && t.push(e), this.el.className = t.join(" ") }, g.prototype.removeClass = function(e) { var t = this.el.className.split(" "); - 1 < (e = t.indexOf(e)) && t.splice(e, 1), this.el.className = t.join(" ") }, g.prototype.onAdd = function() { this.getPanes().overlayMouseTarget.appendChild(this.el) }, g.prototype.draw = function() { this.setPosition(), this.setZIndex(this.zIndex), this.setVisible(this.visible) }, g.prototype.onRemove = function() { this.el.parentNode.removeChild(this.el) }, e[0].style.display = "none"; var l, u, t = e.html(),
+                            e = t.match(p),
+                            n = []; return (e || []).forEach(function(e) { var t = e.replace(a, "").replace(s, ""); - 1 == e.indexOf("::") && -1 == e.indexOf("this.") && -1 == n.indexOf(t) && n.push(e.replace(a, "").replace(s, "")) }), l = t, u = n,
+                            function(n, t, e, o) { o = o[0] || o[1]; var i = d.orgAttributes(t),
+                                    r = d.filter(e),
+                                    a = d.getOptions(r, { scope: n }),
+                                    s = d.getEvents(n, r);
+                                t[0].style.display = "none"; var p, c = new g(a); for (p in setTimeout(function() { n.$watch("[" + u.join(",") + "]", function(e, t) { c.setContent(l, n) }, !0), c.setContent(t[0].innerHTML, n); var e = t[0].firstElementChild && (t[0].firstElementChild.className || "");
+                                        c.class && (e += " " + c.class), c.addClass("custom-marker"), e && c.addClass(e), a.position instanceof google.maps.LatLng || f.getGeoLocation(a.position).then(function(e) { c.setPosition(e) }) }), s) google.maps.event.addDomListener(c.el, p, s[p]);
+                                o.addObject("customMarkers", c), o.observeAttrSetObj(i, e, c), t.bind("$destroy", function() { o.deleteObject("customMarkers", c) }) } } } } var d, c, m, f, v = function() { for (var e = "transform WebkitTransform MozTransform OTransform msTransform".split(" "), t = document.createElement("div"), n = 0; n < e.length; n++)
+                    if (t && void 0 !== t.style[e[n]]) return e[n];
+                return !1 }();
+            e.$inject = ["$timeout", "$compile", "$interpolate", "Attr2MapOptions", "NgMap", "escapeRegexpFilter"], angular.module("ngMap").directive("customMarker", e) }(),
+        function() { "use strict";
+
+            function l(n, e) { var o = new google.maps.DirectionsService,
+                    t = e;
+                t.travelMode = t.travelMode || "DRIVING"; var i = ["origin", "destination", "travelMode", "transitOptions", "unitSystem", "durationInTraffic", "waypoints", "optimizeWaypoints", "provideRouteAlternatives", "avoidHighways", "avoidTolls", "region"]; if (t)
+                    for (var r in t) t.hasOwnProperty(r) && -1 === i.indexOf(r) && delete t[r];
+
+                function a(e) { if (p && e)
+                        if (c)
+                            for (var t in e) e.hasOwnProperty(t) && (c[t] = e[t]);
+                        else c = e;
+                    else p = g(function() { c = c || e, o.route(c, function(e, t) { t == google.maps.DirectionsStatus.OK && (n.setDirections(e), c = void 0) }), g.cancel(p), p = void 0 }, 20) }
+                t.waypoints && (Array.isArray(t.waypoints) || delete t.waypoints), t && t.origin && t.destination && ("current-location" == t.origin ? s.getCurrentPosition().then(function(e) { t.origin = new google.maps.LatLng(e.coords.latitude, e.coords.longitude), a(t) }) : "current-location" == t.destination ? s.getCurrentPosition().then(function(e) { t.destination = new google.maps.LatLng(e.coords.latitude, e.coords.longitude), a(t) }) : a(t)) }
+
+            function e(e, t, n, o) { var c = e; return u = o, g = t, s = n, { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, o, n) { n = n[0] || n[1]; var i = c.orgAttributes(t),
+                            r = c.filter(o),
+                            a = c.getOptions(r, { scope: e }),
+                            s = c.getEvents(e, r),
+                            e = c.getAttrsToObserve(i),
+                            e = [];
+                        r.noWatcher || (e = c.getAttrsToObserve(i)); var p = function(e, t) { e.panel && (e.panel = document.getElementById(e.panel) || document.querySelector(e.panel)); var n, o = new google.maps.DirectionsRenderer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o }(a, s);
+                        n.addObject("directionsRenderers", p), e.forEach(function(e) { var n = e;
+                            o.$observe(n, function(t) { var e; "panel" == n ? g(function() { var e = document.getElementById(t) || document.querySelector(t);
+                                    e && p.setPanel(e) }) : a[n] !== t && (e = c.toOptionValue(t, { key: n }), a[n] = e, l(p, a)) }) }), u.getMap().then(function() { l(p, a) }), t.bind("$destroy", function() { n.deleteObject("directionsRenderers", p) }) } } } var u, g, s, p, c;
+            e.$inject = ["Attr2MapOptions", "$timeout", "NavigatorGeolocation", "NgMap"], angular.module("ngMap").directive("directions", e) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("drawingManager", ["Attr2MapOptions", function(e) { var l = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var i, r = l.filter(n),
+                            a = l.getOptions(r, { scope: e }),
+                            s = l.getControlOptions(r),
+                            p = l.getEvents(e, r),
+                            c = new google.maps.drawing.DrawingManager({ drawingMode: a.drawingmode, drawingControl: a.drawingcontrol, drawingControlOptions: s.drawingControlOptions, circleOptions: a.circleoptions, markerOptions: a.markeroptions, polygonOptions: a.polygonoptions, polylineOptions: a.polylineoptions, rectangleOptions: a.rectangleoptions }); for (i in n.$observe("drawingControlOptions", function(e) { c.drawingControlOptions = l.getControlOptions({ drawingControlOptions: e }).drawingControlOptions, c.setDrawingMode(null), c.setMap(o.map) }), p) google.maps.event.addListener(c, i, p[i]);
+                        o.addObject("mapDrawingManager", c), t.bind("$destroy", function() { o.deleteObject("mapDrawingManager", c) }) } } }]) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("dynamicMapsEngineLayer", ["Attr2MapOptions", function(e) { var i = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1], n = i.filter(n), n = function(e, t) { var n, o = new google.maps.visualization.DynamicMapsEngineLayer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o }(i.getOptions(n, { scope: e }), i.getEvents(e, n, void 0)), o.addObject("mapsEngineLayers", n) } } }]) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("fusionTablesLayer", ["Attr2MapOptions", function(e) { var r = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var n = r.filter(n),
+                            i = function(e, t) { var n, o = new google.maps.FusionTablesLayer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o }(r.getOptions(n, { scope: e }), r.getEvents(e, n, void 0));
+                        o.addObject("fusionTablesLayers", i), t.bind("$destroy", function() { o.deleteObject("fusionTablesLayers", i) }) } } }]) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("heatmapLayer", ["Attr2MapOptions", "$window", function(e, a) { var s = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var i = s.filter(n),
+                            r = s.getOptions(i, { scope: e }); if (r.data = a[n.data] || function(e, t) { return e.split(".").reduce(function(e, t) { return e[t] }, t || this) }(n.data, e), !(r.data instanceof Array)) throw "invalid heatmap data";
+                        r.data = new google.maps.MVCArray(r.data), r = new google.maps.visualization.HeatmapLayer(r), s.getEvents(e, i), o.addObject("heatmapLayers", r) } } }]) }(),
+        function() { "use strict";
+
+            function e(e, c, l, u, g, d, m) { var f = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(i, e, t, r) { r = r[0] || r[1], e.css("display", "none"); var n, o = f.orgAttributes(e),
+                            a = f.filter(t),
+                            s = f.getOptions(a, { scope: i }),
+                            p = function(e, t, n) { var i, o; for (o in !e.position || e.position instanceof google.maps.LatLng || delete e.position, i = new google.maps.InfoWindow(e), t) o && google.maps.event.addListener(i, o, t[o]); var r = l(function(t) { angular.isString(n) ? u(n).then(function(e) { t(angular.element(e).wrap("<div>").parent()) }, function(e) { throw "info-window template request failed: " + e }) : t(n) }).then(function(e) { if (e = e.html().trim(), 1 != angular.element(e).length) throw "info-window working as a template must have a container";
+                                    i.__template = e.replace(/\s?ng-non-bindable[='"]+/, "") }); return i.__open = function(t, n, o) { r.then(function() { g(function() { o && (n.anchor = o); var e = c(i.__template)(n);
+                                            i.setContent(e[0]), n.$apply(), o && o.getPosition ? i.open(t, o) : o && o instanceof google.maps.LatLng ? (i.open(t), i.setPosition(o)) : i.open(t), g(function() { i.content.parentElement.parentElement.parentElement.className = "ng-map-info-window" }) }) }) }, i }(s, f.getEvents(i, a), s.template || e);!s.position || s.position instanceof google.maps.LatLng || (n = s.position), n && m.getGeoLocation(n).then(function(e) { p.setPosition(e), p.__open(r.map, i, e), (e = t.geoCallback) && d(e)(i) }), r.addObject("infoWindows", p), r.observeAttrSetObj(o, t, p), r.showInfoWindow = r.map.showInfoWindow = r.showInfoWindow || function(e, t, n) { var o = "string" == typeof e ? e : t; if ("string" == typeof(t = "string" == typeof e ? t : n))
+                                if (void 0 !== r.map.markers && void 0 !== r.map.markers[t]) t = r.map.markers[t];
+                                else { if (void 0 === r.map.customMarkers || void 0 === r.map.customMarkers[t]) throw new Error("Cant open info window for id " + t + ". Marker or CustomMarker is not defined");
+                                    t = r.map.customMarkers[t] }
+                            n = r.map.infoWindows[o], t = t || (this.getPosition ? this : null), n.__open(r.map, i, t), r.singleInfoWindow && (r.lastInfoWindow && i.hideInfoWindow(r.lastInfoWindow), r.lastInfoWindow = o) }, r.hideInfoWindow = r.map.hideInfoWindow = r.hideInfoWindow || function(e, t) { t = "string" == typeof e ? e : t, r.map.infoWindows[t].close() }, i.showInfoWindow = r.map.showInfoWindow, i.hideInfoWindow = r.map.hideInfoWindow, o = p.mapId ? { id: p.mapId } : 0, m.getMap(o).then(function(e) { var t;
+                            p.visible && p.__open(e, i), p.visibleOnMarker && (t = p.visibleOnMarker, p.__open(e, i, e.markers[t])) }) } } }
+            e.$inject = ["Attr2MapOptions", "$compile", "$q", "$templateRequest", "$timeout", "$parse", "NgMap"], angular.module("ngMap").directive("infoWindow", e) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("kmlLayer", ["Attr2MapOptions", function(e) { var s = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var i = s.orgAttributes(t),
+                            r = s.filter(n),
+                            a = function(e, t) { var n, o = new google.maps.KmlLayer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o }(s.getOptions(r, { scope: e }), s.getEvents(e, r));
+                        o.addObject("kmlLayers", a), o.observeAttrSetObj(i, n, a), t.bind("$destroy", function() { o.deleteObject("kmlLayers", a) }) } } }]) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("mapData", ["Attr2MapOptions", "NgMap", function(e, o) { var s = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(i, e, t, n) { n = n[0] || n[1]; var t = s.filter(t),
+                            r = s.getOptions(t, { scope: i }),
+                            a = s.getEvents(i, t, void 0);
+                        o.getMap(n.map.id).then(function(e) { for (var t in r) { var n = r[t]; "function" == typeof i[n] ? e.data[t](i[n]) : e.data[t](n) } for (var o in a) e.data.addListener(o, a[o]) }) } } }]) }(),
+        function() { "use strict";
+
+            function n(e, t, n) { var o = n.mapLazyLoadParams || n.mapLazyLoad;
+                void 0 === window.google || void 0 === window.google.maps ? (s.push({ scope: e, element: t, savedHtml: a[s.length] }), window.lazyLoadCallback = function() { i(function() { s.forEach(function(e) { e.element.html(e.savedHtml), r(e.element.contents())(e.scope) }) }, 100) }, (n = document.createElement("script")).src = o + (-1 < o.indexOf("?") ? "&" : "?") + "callback=lazyLoadCallback", document.querySelector('script[src="' + n.src + '"]') || document.body.appendChild(n)) : (t.html(a), r(t.contents())(e)) }
+
+            function o(e, t) { return t.mapLazyLoad, a.push(e.html()), t.mapLazyLoad, (void 0 === window.google || void 0 === window.google.maps) && (e.html(""), { pre: n }) }
+
+            function e(e, t) { return r = e, i = t, { compile: o } } var i, r, a = [],
+                s = [];
+            e.$inject = ["$compile", "$timeout"], angular.module("ngMap").directive("mapLazyLoad", e) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("mapType", ["$parse", "NgMap", function(a, s) { return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var i, r = n.name; if (!r) throw "invalid map-type name"; if (!(i = a(n.object)(e))) throw "invalid map-type object";
+                        s.getMap().then(function(e) { e.mapTypes.set(r, i) }), o.addObject("mapTypes", i) } } }]) }(),
+        function() { "use strict";
+
+            function e() { return { restrict: "AE", controller: "__MapController", controllerAs: "ngmap" } }
+            angular.module("ngMap").directive("map", [e]), angular.module("ngMap").directive("ngMap", [e]) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("mapsEngineLayer", ["Attr2MapOptions", function(e) { var i = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1], n = i.filter(n), n = function(e, t) { var n, o = new google.maps.visualization.MapsEngineLayer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o }(i.getOptions(n, { scope: e }), i.getEvents(e, n, void 0)), o.addObject("mapsEngineLayers", n) } } }]) }(),
+        function() { "use strict";
+
+            function o(t, e, n, o) { o = o[0] || o[1]; var i, r = c.orgAttributes(e),
+                    a = c.filter(n),
+                    s = c.getOptions(a, t, { scope: t }),
+                    a = c.getEvents(t, a);
+                s.position instanceof google.maps.LatLng || (i = s.position); var p = function(e, t) { var n, o; if (u.defaultOptions.marker)
+                        for (var i in u.defaultOptions.marker) void 0 === e[i] && (e[i] = u.defaultOptions.marker[i]); for (o in e.position instanceof google.maps.LatLng || (e.position = new google.maps.LatLng(0, 0)), n = new google.maps.Marker(e), Object.keys(t).length, t) o && google.maps.event.addListener(n, o, t[o]); return n }(s, a);
+                o.addObject("markers", p), i && u.getGeoLocation(i).then(function(e) { p.setPosition(e), s.centered && p.map.setCenter(e), (e = n.geoCallback) && l(e)(t) }), o.observeAttrSetObj(r, n, p), e.bind("$destroy", function() { o.deleteObject("markers", p) }) }
+
+            function e(e, t, n) { return c = e, l = t, u = n, { restrict: "E", require: ["^?map", "?^ngMap"], link: o } } var c, l, u;
+            e.$inject = ["Attr2MapOptions", "$parse", "NgMap"], angular.module("ngMap").directive("marker", e) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("overlayMapType", ["NgMap", function(a) { return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var i = n.initMethod || "insertAt",
+                            r = e[n.object];
+                        a.getMap().then(function(e) { var t; "insertAt" == i ? (t = parseInt(n.index, 10), e.overlayMapTypes.insertAt(t, r)) : "push" == i && e.overlayMapTypes.push(r) }), o.addObject("overlayMapTypes", r) } } }]) }(),
+        function() { "use strict";
+
+            function e(e, c) { var l = e; return { restrict: "A", require: "?ngModel", link: function(t, e, n, o) { if ("false" === n.placesAutoComplete) return !1; var i, r = l.filter(n),
+                            a = l.getOptions(r, { scope: t }),
+                            s = l.getEvents(t, r),
+                            p = new google.maps.places.Autocomplete(e[0], a); for (i in p.setOptions({ strictBounds: !0 === a.strictBounds }), s) google.maps.event.addListener(p, i, s[i]);
+                        a = function() { c(function() { o && o.$setViewValue(e.val()) }, 100) }, google.maps.event.addListener(p, "place_changed", a), e[0].addEventListener("change", a), n.$observe("rectBounds", function(e) { e && (e = l.toOptionValue(e, { key: "rectBounds" }), p.setBounds(new google.maps.LatLngBounds(new google.maps.LatLng(e.south_west.lat, e.south_west.lng), new google.maps.LatLng(e.north_east.lat, e.north_east.lng)))) }), n.$observe("circleBounds", function(e) { e && (e = l.toOptionValue(e, { key: "circleBounds" }), e = new google.maps.Circle(e), p.setBounds(e.getBounds())) }), n.$observe("types", function(e) { e && (e = l.toOptionValue(e, { key: "types" }), p.setTypes(e)) }), n.$observe("componentRestrictions", function(e) { e && p.setComponentRestrictions(t.$eval(e)) }) } } }
+            e.$inject = ["Attr2MapOptions", "$timeout"], angular.module("ngMap").directive("placesAutoComplete", e) }(),
+        function() { "use strict";
+
+            function e(e, l, u) { var g = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(t, e, n, o) { o = o[0] || o[1]; var i, r = g.orgAttributes(e),
+                            a = g.filter(n),
+                            s = g.getOptions(a, { scope: t }),
+                            p = g.getEvents(t, a),
+                            a = s.name;
+                        s.center instanceof google.maps.LatLng || (i = s.center); var c = function(e, t) { var n, o = e.name; switch (delete e.name, o) {
+                                case "circle":
+                                    e.center instanceof google.maps.LatLng || (e.center = new google.maps.LatLng(0, 0)), a = new google.maps.Circle(e); break;
+                                case "polygon":
+                                    a = new google.maps.Polygon(e); break;
+                                case "polyline":
+                                    a = new google.maps.Polyline(e); break;
+                                case "rectangle":
+                                    a = new google.maps.Rectangle(e); break;
+                                case "groundOverlay":
+                                case "image":
+                                    var i = e.url,
+                                        r = { opacity: e.opacity, clickable: e.clickable, id: e.id },
+                                        a = new google.maps.GroundOverlay(i, e.bounds, r) } for (n in t) t[n] && google.maps.event.addListener(a, n, t[n]); return a }(s, p);
+                        o.addObject("shapes", c), i && "circle" == a && u.getGeoLocation(i).then(function(e) { c.setCenter(e), c.centered && c.map.setCenter(e), (e = n.geoCallback) && l(e)(t) }), o.observeAttrSetObj(r, n, c), e.bind("$destroy", function() { o.deleteObject("shapes", c) }) } } }
+            e.$inject = ["Attr2MapOptions", "$parse", "NgMap"], angular.module("ngMap").directive("shape", e) }(),
+        function() { "use strict";
+
+            function e(e, s) { var p = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n) { var o = p.filter(n),
+                            i = p.getOptions(o, { scope: e }),
+                            n = p.getControlOptions(o),
+                            r = angular.extend(i, n),
+                            a = p.getEvents(e, o);
+                        s.getMap().then(function(e) { var t = function(e, t, n) { var o, i, r; for (r in t.container && (i = (i = document.getElementById(t.container)) || document.querySelector(t.container)), i ? o = new google.maps.StreetViewPanorama(i, t) : (o = e.getStreetView()).setOptions(t), n) r && google.maps.event.addListener(o, r, n[r]); return o }(e, r, a);
+                            e.setStreetView(t), t.getPosition() || t.setPosition(e.getCenter()), google.maps.event.addListener(t, "position_changed", function() { t.getPosition() !== e.getCenter() && e.setCenter(t.getPosition()) }); var n = google.maps.event.addListener(e, "center_changed", function() { t.setPosition(e.getCenter()), google.maps.event.removeListener(n) }) }) } } }
+            e.$inject = ["Attr2MapOptions", "NgMap"], angular.module("ngMap").directive("streetViewPanorama", e) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("trafficLayer", ["Attr2MapOptions", function(e) { var s = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var i = s.orgAttributes(t),
+                            r = s.filter(n),
+                            a = function(e, t) { var n, o = new google.maps.TrafficLayer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o }(s.getOptions(r, { scope: e }), s.getEvents(e, r));
+                        o.addObject("trafficLayers", a), o.observeAttrSetObj(i, n, a), t.bind("$destroy", function() { o.deleteObject("trafficLayers", a) }) } } }]) }(),
+        function() { "use strict";
+            angular.module("ngMap").directive("transitLayer", ["Attr2MapOptions", function(e) { var s = e; return { restrict: "E", require: ["?^map", "?^ngMap"], link: function(e, t, n, o) { o = o[0] || o[1]; var i = s.orgAttributes(t),
+                            r = s.filter(n),
+                            a = function(e, t) { var n, o = new google.maps.TransitLayer(e); for (n in t) google.maps.event.addListener(o, n, t[n]); return o }(s.getOptions(r, { scope: e }), s.getEvents(e, r));
+                        o.addObject("transitLayers", a), o.observeAttrSetObj(i, n, a), t.bind("$destroy", function() { o.deleteObject("transitLayers", a) }) } } }]) }(),
+        function() { "use strict"; var t = /([\:\-\_]+(.))/g,
+                n = /^moz([A-Z])/;
+            angular.module("ngMap").filter("camelCase", function() { return function(e) { return e.replace(t, function(e, t, n, o) { return o ? n.toUpperCase() : n }).replace(n, "Moz$1") } }) }(),
+        function() { "use strict";
+            angular.module("ngMap").filter("escapeRegexp", function() { return function(e) { return e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") } }) }(),
+        function() { "use strict";
+            angular.module("ngMap").filter("jsonize", function() { return function(t) { try { return JSON.parse(t), t } catch (e) { return t.replace(/([\$\w]+)\s*:/g, function(e, t) { return '"' + t + '":' }).replace(/'([^']+)'/g, function(e, t) { return '"' + t + '"' }).replace(/''/g, '""') } } }) }(),
+        function() { "use strict"; var isoDateRE = /^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):?(\d\d))?$/,
+                Attr2MapOptions = function($parse, $timeout, $log, $interpolate, NavigatorGeolocation, GeoCoder, camelCaseFilter, jsonizeFilter, escapeRegExp) { var exprStartSymbol = $interpolate.startSymbol(),
+                        exprEndSymbol = $interpolate.endSymbol(),
+                        orgAttributes = function(e) { 0 < e.length && (e = e[0]); for (var t = {}, n = 0; n < e.attributes.length; n++) { var o = e.attributes[n];
+                                t[o.name] = o.value } return t },
+                        getJSON = function(e) { return e.match(/^[\+\-]?[0-9\.]+,[ ]*\ ?[\+\-]?[0-9\.]+$/) && (e = "[" + e + "]"), JSON.parse(jsonizeFilter(e)) },
+                        getLatLng = function(e) { var t = e; if (e[0].constructor == Array)
+                                if (e[0][0].constructor == Array && 2 == e[0][0].length || e[0][0].constructor == Object) { for (var n, o = [], i = 0; i < e.length; i++) n = e[i].map(function(e) { return new google.maps.LatLng(e[0], e[1]) }), o.push(n);
+                                    t = o } else t = e.map(function(e) { return new google.maps.LatLng(e[0], e[1]) });
+                            else !isNaN(parseFloat(e[0])) && isFinite(e[0]) && (t = new google.maps.LatLng(t[0], t[1])); return t },
+                        toOptionValue = function(input, options) { var output; try { output = getNumber(input) } catch (err) { try { var output = getJSON(input),
+                                        newOptions;
+                                    output instanceof Array ? output[0].constructor == Object || output[0] instanceof Array && output[0][0].constructor == Object || (output = getLatLng(output)) : output === Object(output) && (newOptions = options, newOptions.doNotConverStringToNumber = !0, output = getOptions(output, newOptions)) } catch (err2) { if (input.match(/^[A-Z][a-zA-Z0-9]+\(.*\)$/)) try { var exp = "new google.maps." + input;
+                                        output = eval(exp) } catch (e) { output = input } else if (input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/)) try { var matches = input.match(/^([A-Z][a-zA-Z0-9]+)\.([A-Z]+)$/);
+                                        output = google.maps[matches[1]][matches[2]] } catch (e) { output = input } else if (input.match(/^[A-Z]+$/)) try { var capitalizedKey = options.key.charAt(0).toUpperCase() + options.key.slice(1);
+                                        output = options.key.match(/temperatureUnit|windSpeedUnit|labelColor/) ? (capitalizedKey = capitalizedKey.replace(/s$/, ""), google.maps.weather[capitalizedKey][input]) : google.maps[capitalizedKey][input] } catch (e) { output = input } else if (input.match(isoDateRE)) try { output = new Date(input) } catch (e) { output = input } else if (input.match(new RegExp("^" + escapeRegExp(exprStartSymbol))) && options.scope) try { var expr = input.replace(new RegExp(escapeRegExp(exprStartSymbol)), "").replace(new RegExp(escapeRegExp(exprEndSymbol), "g"), "");
+                                        output = options.scope.$eval(expr) } catch (err) { output = input } else output = input } } if (("center" == options.key || "position" == options.key) && output instanceof Array && (output = new google.maps.LatLng(output[0], output[1])), "bounds" == options.key && output instanceof Array && (output = new google.maps.LatLngBounds(output[0], output[1])), "icons" == options.key && output instanceof Array)
+                                for (var i = 0; i < output.length; i++) { var el = output[i];
+                                    el.icon.path.match(/^[A-Z_]+$/) && (el.icon.path = google.maps.SymbolPath[el.icon.path]) }
+                            if ("icon" == options.key && output instanceof Object)
+                                for (var key in ("" + output.path).match(/^[A-Z_]+$/) && (output.path = google.maps.SymbolPath[output.path]), output) { var arr = output[key]; "anchor" == key || "origin" == key || "labelOrigin" == key ? output[key] = new google.maps.Point(arr[0], arr[1]) : "size" != key && "scaledSize" != key || (output[key] = new google.maps.Size(arr[0], arr[1])) }
+                            return output },
+                        getAttrsToObserve = function(e) { var t = [],
+                                n = new RegExp(escapeRegExp(exprStartSymbol) + ".*" + escapeRegExp(exprEndSymbol), "g"); if (!e.noWatcher)
+                                for (var o in e) { var i = e[o];
+                                    i && i.match(n) && t.push(camelCaseFilter(o)) }
+                            return t },
+                        filter = function(e) { var t, n = {}; for (t in e) t.match(/^\$/) || t.match(/^ng[A-Z]/) || (n[t] = e[t]); return n },
+                        getOptions = function(e, t) { t = t || {}; var n, o = {}; for (n in e) !e[n] && 0 !== e[n] || n.match(/^on[A-Z]/) || n.match(/ControlOptions$/) || ("string" != typeof e[n] || t.doNotConverStringToNumber && e[n].match(/^[0-9]+$/) ? o[n] = e[n] : o[n] = toOptionValue(e[n], { key: n, scope: t.scope })); return o },
+                        getEvents = function(r, e) {
+                            function t(e) { return "_" + e.toLowerCase() }
+
+                            function n(e) { var o = (e = e.match(/([^\(]+)\(([^\)]*)\)/))[1],
+                                    e = e[2].replace(/event[ ,]*/, ""),
+                                    i = $parse("[" + e + "]"); return function(e) { var t = i(r),
+                                        n = o.split(".").reduce(function(e, t) { return e[t] }, r);
+                                    n && n.apply(this, [e].concat(t)), $timeout(function() { r.$apply() }) } } var o, i, a, s = {}; for (o in e) e[o] && o.match(/^on[A-Z]/) && (i = (i = (i = o.replace(/^on/, "")).charAt(0).toLowerCase() + i.slice(1)).replace(/([A-Z])/g, t), a = e[o], s[i] = new n(a)); return s },
+                        getControlOptions = function(e) { var t, n = {}; if ("object" != typeof e) return !1; for (t in e)
+                                if (e[t] && t.match(/(.*)ControlOptions$/)) { var o = (o = e[t].replace(/'/g, '"')).replace(/([^"]+)|("[^"]+")/g, function(e, t, n) { return t ? t.replace(/([a-zA-Z0-9]+?):/g, '"$1":') : n }); try { var i, r, a, s = JSON.parse(o); for (i in s) s[i] && ("string" == typeof(r = s[i]) ? r = r.toUpperCase() : "mapTypeIds" === i && (r = r.map(function(e) { return e.match(/^[A-Z]+$/) ? google.maps.MapTypeId[e.toUpperCase()] : e })), "style" === i ? (a = (t.charAt(0).toUpperCase() + t.slice(1)).replace(/Options$/, "") + "Style", s[i] = google.maps[a][r]) : s[i] = "position" === i ? google.maps.ControlPosition[r] : r);
+                                        n[t] = s } catch (e) {} }
+                            return n }; return { filter: filter, getOptions: getOptions, getEvents: getEvents, getControlOptions: getControlOptions, toOptionValue: toOptionValue, getAttrsToObserve: getAttrsToObserve, orgAttributes: orgAttributes } };
+            Attr2MapOptions.$inject = ["$parse", "$timeout", "$log", "$interpolate", "NavigatorGeolocation", "GeoCoder", "camelCaseFilter", "jsonizeFilter", "escapeRegexpFilter"], angular.module("ngMap").service("Attr2MapOptions", Attr2MapOptions) }(),
+        function() { "use strict";
+
+            function t(e) { var n = o.defer(); return (new google.maps.Geocoder).geocode(e, function(e, t) { t == google.maps.GeocoderStatus.OK ? n.resolve(e) : n.reject(t) }), n.promise }
+
+            function e(e) { return o = e, { geocode: t } } var o;
+            e.$inject = ["$q"], angular.module("ngMap").service("GeoCoder", e) }(),
+        function() { "use strict";
+
+            function e(e, t) { return o = e, i = t, { load: function(e) { var t, n = o.defer(); return void 0 === window.google || void 0 === window.google.maps ? (window.lazyLoadCallback = function() { i(function() { n.resolve(window.google) }, 100) }, (t = document.createElement("script")).src = e + (-1 < e.indexOf("?") ? "&" : "?") + "callback=lazyLoadCallback", document.querySelector('script[src="' + t.src + '"]') || document.body.appendChild(t)) : n.resolve(window.google), n.promise } } } var o, i;
+            e.$inject = ["$q", "$timeout"], angular.module("ngMap").service("GoogleMapsApi", e) }(),
+        function() { "use strict";
+
+            function t(e) { var t = n.defer(); return navigator.geolocation ? (void 0 === e ? e = { timeout: 5e3 } : void 0 === e.timeout && (e.timeout = 5e3), navigator.geolocation.getCurrentPosition(function(e) { t.resolve(e) }, function(e) { t.reject(e) }, e)) : t.reject("Browser Geolocation service failed."), t.promise }
+
+            function e(e) { return n = e, { getCurrentPosition: t } } var n;
+            e.$inject = ["$q"], angular.module("ngMap").service("NavigatorGeolocation", e) }(),
+        function() { "use strict";
+
+            function o(e) { var t, n = function(e, t) { for (var n, o = 0; o < l.length; o++) { var i = l[o]; if (i.id == t && !i.inUse) { var r = i.getDiv();
+                            e.appendChild(r), n = i; break } } return n }(e, e.id) || function(e) { for (var t, n = 0; n < l.length; n++) { var o = l[n]; if (!o.id && !o.inUse) { var i = o.getDiv();
+                            e.appendChild(i), t = o; break } } return t }(e); return n ? c(function() { google.maps.event.trigger(n, "idle") }, 100) : (t = e, (e = p.createElement("div")).style.width = "100%", e.style.height = "100%", t.appendChild(e), e = new s.google.maps.Map(e, {}), l.push(e), n = e), n.inUse = !0, n }
+
+            function i(e) { e.inUse = !1 }
+
+            function r() { for (var e = 0; e < l.length; e++) l[e] = null;
+                l = [] }
+
+            function a(e) { for (var t = 0; t < l.length; t++) null !== l[t] && l[t].id == e && (l[t] = null, l.splice(t, 1)) }
+
+            function e(e, t, n) { return p = e[0], s = t, c = n, { mapInstances: l, resetMapInstances: r, getMapInstance: o, returnMapInstance: i, deleteMapInstance: a } } var s, p, c, l = [];
+            e.$inject = ["$document", "$window", "$timeout"], angular.module("ngMap").factory("NgMapPool", e) }(),
+        function() { "use strict";
+
+            function t(e, t) { var n; return e.currentStyle ? n = e.currentStyle[t] : v.getComputedStyle && (n = y.defaultView.getComputedStyle(e, null).getPropertyValue(t)), n }
+
+            function c(e) { if (!((e = a[e || 0]).map instanceof google.maps.Map)) return e.initializeMap(), e.map }
+
+            function l(o, e) { e = e || {}, o = "object" == typeof o ? o.id : o; var i = h.defer(),
+                    r = e.timeout || 1e4; return function e(t) { var n = Object.keys(a),
+                        n = a[n[0]];
+                    o && a[o] ? i.resolve(a[o].map) : !o && n && n.map ? i.resolve(n.map) : r < t ? i.reject("could not find map") : v.setTimeout(function() { e(t + 100) }, 100) }(0), i.promise }
+
+            function u(e) { var t;
+                e.map && (t = Object.keys(a).length, a[e.map.id || t] = e) }
+
+            function g(t) { var e = Object.keys(a).length - 1,
+                    e = t.map.id || e; if (t.map) { for (var n in t.eventListeners) { var o = t.eventListeners[n];
+                        google.maps.event.removeListener(o) }
+                    t.map.controls && t.map.controls.forEach(function(e) { e.clear() }) }
+                t.map.heatmapLayers && Object.keys(t.map.heatmapLayers).forEach(function(e) { t.deleteObject("heatmapLayers", t.map.heatmapLayers[e]) }), L.deleteMapInstance(e), delete a[e] }
+
+            function d(e, t) { var n = h.defer(); return !e || e.match(/^current/i) ? b.getCurrentPosition(t).then(function(e) { var t = e.coords.latitude,
+                        e = e.coords.longitude,
+                        e = new google.maps.LatLng(t, e);
+                    n.resolve(e) }, function(e) { n.reject(e) }) : M.geocode({ address: e }).then(function(e) { n.resolve(e[0].geometry.location) }, function(e) { n.reject(e) }), n.promise }
+
+            function m(n, o) { return function(e) { var t;
+                    e && (t = w("set-" + n), e = O.toOptionValue(e, { key: n }), o[t] && (n.match(/center|position/) && "string" == typeof e ? d(e).then(function(e) { o[t](e) }) : o[t](e))) } }
+
+            function f(e) { "true" == e.getAttribute("default-style") ? (e.style.display = "block", e.style.height = "480px") : ("block" != t(e, "display") && (e.style.display = "block"), t(e, "height").match(/^(0|auto)/) && (e.style.height = "480px")) } var v, y, h, b, O, M, w, L, a = {};
+            angular.module("ngMap").provider("NgMap", function() { var p = {};
+
+                function e(e, t, n, o, i, r, a, s) { return v = e, y = t[0], h = n, b = o, O = i, M = r, w = a, L = s, { defaultOptions: p, addMap: u, deleteMap: g, getMap: l, initMap: c, setStyle: f, getGeoLocation: d, observeAndSet: m } }
+                this.setDefaultOptions = function(e) { p = e }, e.$inject = ["$window", "$document", "$q", "NavigatorGeolocation", "Attr2MapOptions", "GeoCoder", "camelCaseFilter", "NgMapPool"], this.$get = e }) }(),
+        function() { "use strict";
+
+            function t(e, t) { t = t || e.getCenter(); var n = o.defer(); return (new google.maps.StreetViewService).getPanoramaByLocation(t || e.getCenter, 100, function(e, t) { t === google.maps.StreetViewStatus.OK ? n.resolve(e.location.pano) : n.resolve(!1) }), n.promise }
+
+            function n(e, t) { new google.maps.StreetViewPanorama(e.getDiv(), { enableCloseButton: !0 }).setPano(t) }
+
+            function e(e) { return o = e, { getPanorama: t, setPanorama: n } } var o;
+            e.$inject = ["$q"], angular.module("ngMap").service("StreetView", e) }(), "ngMap" });

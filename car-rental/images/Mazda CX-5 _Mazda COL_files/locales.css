@@ -1,0 +1,26 @@
+body{
+    background: #ffffff
+}
+
+.titulo{
+    display: flex;
+    flex: 100%;
+    padding: 40px;
+}
+.titulo-2{
+    flex: 50%;
+}
+.texto-1{
+    flex: 80%;
+}
+@media (max-width: 768px){
+    .titulo{
+        flex-direction: column;
+        padding: 15px;
+    }
+    .titulo-2{
+        padding: 15px 0px;
+    }
+    
+
+}
